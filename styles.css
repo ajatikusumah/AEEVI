@@ -173,6 +173,7 @@ h3 { line-height: 1.2; }
 .publication-card-accent .publication-type { color: #ffe1de; }
 .publication-card h3 { margin-top: auto; font-size: 1.35rem; line-height: 1.2; }
 .publication-bottom { display: flex; justify-content: space-between; gap: 10px; margin-top: 36px; color: #b7c6da; font-size: .7rem; }
+.publication-bottom a { color: inherit; font-weight: 800; }
 .publication-card-accent .publication-bottom { color: #ffe1de; }
 .publication-card.is-hidden { display: none; }
 
