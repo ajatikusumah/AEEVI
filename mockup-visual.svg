@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1440" height="2460" viewBox="0 0 1440 2460">
+  <defs>
+    <linearGradient id="heroCard" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbfcfd"/><stop offset="1" stop-color="#d9e6f2"/></linearGradient>
+    <linearGradient id="member" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#dce8f4"/><stop offset="1" stop-color="#f3eee8"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#142d55" flood-opacity=".15"/></filter>
+    <style>
+      .display{font-family:'DejaVu Sans',Arial,sans-serif;font-weight:700;letter-spacing:-2px}.body{font-family:'DejaVu Sans',Arial,sans-serif}.small{font-family:'DejaVu Sans',Arial,sans-serif;font-size:16px}.blue{fill:#315585}.muted{fill:#647086}.white{fill:#fff}.red{fill:#f14b46}.navy{fill:#142d55}.line{stroke:#d8dbe0;stroke-width:1}.caps{font-family:'DejaVu Sans',Arial,sans-serif;font-size:15px;font-weight:700;letter-spacing:2px}
+    </style>
+  </defs>
+  <rect width="1440" height="2460" fill="#f5f3ef"/>
+  <rect width="1440" height="6" fill="#4e6fa9"/><rect x="864" width="576" height="6" fill="#f14b46"/>
+
+  <!-- header -->
+  <rect y="6" width="1440" height="92" fill="#f5f3ef"/>
+  <image x="82" y="35" width="175" height="58" preserveAspectRatio="xMidYMid meet" xlink:href="assets/aeevi-logo-cropped.png"/>
+  <g class="body" font-size="15" font-weight="700" fill="#4f5d71">
+    <text x="700" y="59">Beranda</text><text x="790" y="59">Profil AEEVI</text><text x="925" y="59">Kegiatan</text><text x="1025" y="59">Publikasi</text><text x="1132" y="59">Keanggotaan</text>
+  </g>
+  <rect x="1280" y="31" width="112" height="42" rx="21" fill="#142d55"/><text x="1300" y="58" class="body white" font-size="14" font-weight="700">Gabung AEEVI ↗</text>
+
+  <!-- hero -->
+  <circle cx="-80" cy="-40" r="340" fill="none" stroke="#d6e0ed" stroke-width="2"/><circle cx="-80" cy="-40" r="290" fill="none" stroke="#f0c4c0" stroke-width="1"/>
+  <circle cx="1480" cy="540" r="410" fill="none" stroke="#d6e0ed" stroke-width="2"/><circle cx="1480" cy="540" r="330" fill="none" stroke="#f0c4c0" stroke-width="1"/>
+  <text x="82" y="225" class="caps blue">↗  ASOSIASI PROFESI BERBASIS KEILMUAN</text>
+  <circle cx="98" cy="216" r="14" fill="#f14b46"/>
+  <text x="82" y="330" class="display blue" font-size="61">Epidemiologi dan</text>
+  <text x="82" y="397" class="display blue" font-size="61">ekonomi veteriner</text>
+  <text x="82" y="464" class="display blue" font-size="61">untuk Indonesia</text>
+  <text x="82" y="531" class="display blue" font-size="61">yang lebih sehat.</text>
+  <text x="82" y="592" class="body muted" font-size="20">AEEVI mempertemukan pengetahuan, pengalaman, dan kolaborasi</text>
+  <text x="82" y="624" class="body muted" font-size="20">para profesional untuk memperkuat kesehatan hewan dan masyarakat.</text>
+  <rect x="82" y="674" width="164" height="52" rx="26" fill="#f14b46"/><text x="111" y="707" class="body white" font-size="16" font-weight="700">Kenali AEEVI  ↗</text>
+  <text x="273" y="706" class="body blue" font-size="16" font-weight="700">Lihat kegiatan</text>
+  <circle cx="87" cy="770" r="5" fill="#77bd7c"/><text x="103" y="776" class="body" fill="#7a8493" font-size="14">Di bawah naungan Perhimpunan Dokter Hewan Indonesia</text>
+
+  <!-- hero visual -->
+  <ellipse cx="1130" cy="460" rx="295" ry="135" fill="none" stroke="#9eb5d0" stroke-width="2" transform="rotate(-18 1130 460)"/>
+  <ellipse cx="1130" cy="460" rx="340" ry="165" fill="none" stroke="#f1aaa7" stroke-width="2" transform="rotate(22 1130 460)"/>
+  <g transform="rotate(7 1100 460)" filter="url(#shadow)">
+    <rect x="950" y="270" width="310" height="390" fill="url(#heroCard)" stroke="#a8bdd4"/>
+    <circle cx="1000" cy="585" r="140" fill="#c8d9ec" opacity=".5"/><circle cx="1226" cy="408" r="83" fill="#f4aaa6" opacity=".55"/>
+    <text x="980" y="307" class="caps blue">AEEVI</text><text x="1180" y="307" class="caps blue">2026</text>
+    <circle cx="1105" cy="450" r="78" fill="none" stroke="#315585" stroke-width="3"/><circle cx="1105" cy="450" r="59" fill="none" stroke="#6887ae" stroke-width="1"/>
+    <text x="1080" y="475" class="display blue" font-size="85">V</text><path d="M1060 395 L1150 510" stroke="#f14b46" stroke-width="4"/><path d="M1150 395 L1060 510" stroke="#315585" stroke-width="4" opacity=".4"/>
+    <text x="980" y="620" class="caps blue" font-size="12">EVIDENCE · COLLABORATION · IMPACT</text>
+  </g>
+  <rect x="1215" y="230" width="150" height="70" rx="12" fill="#142d55" transform="rotate(5 1215 230)"/><text x="1235" y="258" class="body white" font-size="14">Veterinary</text><text x="1235" y="280" class="body white" font-size="16" font-weight="700">Epidemiology</text>
+  <rect x="850" y="620" width="130" height="70" rx="12" fill="#f14b46" transform="rotate(-7 850 620)"/><text x="875" y="648" class="body white" font-size="14">Data →</text><text x="875" y="672" class="body white" font-size="16" font-weight="700">Action</text>
+  <text x="1265" y="650" class="display red" font-size="60">↗</text>
+
+  <!-- quick links -->
+  <rect y="850" width="1440" height="120" fill="#fff"/><path d="M0 850H1440M0 970H1440" class="line"/>
+  <g class="body"><text x="84" y="890" class="caps red">01</text><text x="128" y="895" class="blue" font-size="17" font-weight="700">Profil organisasi</text><text x="128" y="922" class="muted" font-size="14">Visi, misi, dan perjalanan AEEVI</text><text x="320" y="902" class="red" font-size="24">↗</text>
+  <text x="410" y="890" class="caps red">02</text><text x="454" y="895" class="blue" font-size="17" font-weight="700">Kegiatan &amp; agenda</text><text x="454" y="922" class="muted" font-size="14">Program dan kolaborasi terbaru</text><text x="670" y="902" class="red" font-size="24">↗</text>
+  <text x="760" y="890" class="caps red">03</text><text x="804" y="895" class="blue" font-size="17" font-weight="700">Pengetahuan</text><text x="804" y="922" class="muted" font-size="14">Artikel, publikasi, dan dokumen</text><text x="1010" y="902" class="red" font-size="24">↗</text>
+  <text x="1100" y="890" class="caps red">04</text><text x="1144" y="895" class="blue" font-size="17" font-weight="700">Keanggotaan</text><text x="1144" y="922" class="muted" font-size="14">Terhubung dengan jejaring profesi</text><text x="1360" y="902" class="red" font-size="24">↗</text></g>
+
+  <!-- profile -->
+  <rect y="970" width="1440" height="380" fill="#fff"/>
+  <text x="82" y="1050" class="caps blue">01  TENTANG AEEVI</text><text x="82" y="1125" class="display blue" font-size="42">Pengetahuan yang terhubung</text><text x="82" y="1174" class="display blue" font-size="42">dengan kebutuhan nyata.</text>
+  <text x="82" y="1228" class="body muted" font-size="17">AEEVI adalah asosiasi profesi yang berfokus pada pengembangan ilmu</text><text x="82" y="1255" class="body muted" font-size="17">epidemiologi dan ekonomi veteriner di Indonesia.</text><text x="82" y="1305" class="body blue" font-size="16" font-weight="700">Pelajari lebih lanjut  ↗</text>
+  <rect x="800" y="1040" width="555" height="260" fill="url(#heroCard)" stroke="#b4c7dc"/><text x="832" y="1078" class="caps blue">AEEVI / PROFIL</text><text x="1300" y="1078" class="red" font-size="25">↗</text><text x="832" y="1160" class="display blue" font-size="27">“Menguatkan peran epidemiologi</text><text x="832" y="1195" class="display blue" font-size="27">dan ekonomi veteriner melalui</text><text x="832" y="1230" class="display blue" font-size="27">keilmuan, kolaborasi, dan</text><text x="832" y="1265" class="display blue" font-size="27">pengabdian.”</text>
+
+  <!-- focus -->
+  <rect y="1350" width="1440" height="430" fill="#f5f3ef"/>
+  <text x="82" y="1430" class="caps blue">02  FOKUS ORGANISASI</text><text x="82" y="1495" class="display blue" font-size="42">Empat ruang untuk bertumbuh</text><text x="82" y="1542" class="display blue" font-size="42">dan berkontribusi.</text>
+  <g class="body"><rect x="82" y="1600" width="300" height="140" fill="#4e6fa9"/><text x="106" y="1630" class="caps white">01</text><text x="106" y="1683" class="display white" font-size="24">Keilmuan</text><text x="106" y="1712" class="white" font-size="14">Epidemiologi, ekonomi, dan analisis</text>
+  <rect x="398" y="1600" width="300" height="140" fill="#dce7f4"/><text x="422" y="1630" class="caps blue">02</text><text x="422" y="1683" class="display blue" font-size="24">Kompetensi</text><text x="422" y="1712" class="blue" font-size="14">Belajar dan penguatan kapasitas</text>
+  <rect x="714" y="1600" width="300" height="140" fill="#f14b46"/><text x="738" y="1630" class="caps white">03</text><text x="738" y="1683" class="display white" font-size="24">Kolaborasi</text><text x="738" y="1712" class="white" font-size="14">Jejaring profesi dan mitra</text>
+  <rect x="1030" y="1600" width="300" height="140" fill="#142d55"/><text x="1054" y="1630" class="caps white">04</text><text x="1054" y="1683" class="display white" font-size="24">Pengabdian</text><text x="1054" y="1712" class="white" font-size="14">Kontribusi berbasis bukti</text></g>
+
+  <!-- publications -->
+  <rect y="1780" width="1440" height="470" fill="#142d55"/><text x="82" y="1860" class="caps" fill="#b7cae5">04  PENGETAHUAN &amp; PUBLIKASI</text><text x="82" y="1928" class="display white" font-size="42">Temukan gagasan yang bisa digunakan.</text><text x="82" y="1968" class="body" fill="#bdc9d9" font-size="17">Artikel anggota, publikasi ilmiah, berita organisasi, dan dokumen resmi.</text>
+  <path d="M82 2010H1358" stroke="#6b7f9e" stroke-width="1"/><text x="82" y="2044" class="body white" font-size="15" font-weight="700">Semua</text><text x="170" y="2044" class="body" fill="#b7c6da" font-size="15">Artikel</text><text x="252" y="2044" class="body" fill="#b7c6da" font-size="15">Dokumen</text><text x="360" y="2044" class="body" fill="#b7c6da" font-size="15">Berita</text>
+  <rect x="82" y="2080" width="400" height="130" fill="#294a76" stroke="#6b7f9e"/><rect x="520" y="2080" width="400" height="130" fill="#f14b46"/><rect x="958" y="2080" width="400" height="130" fill="#294a76" stroke="#6b7f9e"/>
+  <text x="108" y="2112" class="caps" fill="#aec4e2">ARTIKEL</text><text x="108" y="2160" class="display white" font-size="21">Epidemiologi veteriner</text><text x="108" y="2188" class="display white" font-size="21">untuk kebijakan kesehatan</text>
+  <text x="546" y="2112" class="caps" fill="#ffe1de">DOKUMEN RESMI</text><text x="546" y="2160" class="display white" font-size="21">AD/ART, MUNAS, dan</text><text x="546" y="2188" class="display white" font-size="21">dokumen organisasi</text>
+  <text x="984" y="2112" class="caps" fill="#aec4e2">BERITA</text><text x="984" y="2160" class="display white" font-size="21">Pembaruan organisasi</text><text x="984" y="2188" class="display white" font-size="21">untuk anggota</text>
+
+  <!-- membership and footer -->
+  <rect y="2250" width="1440" height="210" fill="url(#member)"/><text x="82" y="2312" class="caps blue">05  KEANGGOTAAN</text><text x="82" y="2365" class="display blue" font-size="33">Jadilah bagian dari jejaring profesi AEEVI.</text><rect x="1170" y="2320" width="145" height="50" rx="25" fill="#f14b46"/><text x="1192" y="2352" class="body white" font-size="14" font-weight="700">Gabung sekarang ↗</text>
+  <rect y="2460" width="1440" height="1" fill="#365278"/>
+</svg>
