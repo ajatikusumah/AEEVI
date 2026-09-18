@@ -309,7 +309,7 @@ h3 { line-height: 1.2; }
 .structure-card { padding: 26px; background: var(--white); border: 1px solid var(--line); }
 .structure-card-full { grid-column: 1 / -1; }
 .structure-card .panel-label { color: var(--red); }
-.structure-card h3 { margin: 16px 0 18px; color: var(--blue-dark); font-size: 1.35rem; }
+.structure-card h3 { margin: 34px 0 24px; color: var(--blue-dark); font-size: clamp(1.65rem, 2.6vw, 2.2rem); letter-spacing: -.05em; }
 .structure-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
 .structure-list li { display: grid; grid-template-columns: minmax(170px, .7fr) 1fr; gap: 15px; padding: 12px 0; border-top: 1px solid var(--line); font-size: .84rem; }
 .structure-list strong { color: var(--blue-dark); }
@@ -399,4 +399,19 @@ h3 { line-height: 1.2; }
 @media (max-width: 460px) {
   .photo-grid { grid-template-columns: 1fr; }
   .photo-card-wide { grid-column: auto; }
+}
+
+.official-structure-card { padding: 38px 42px; background: var(--white); border: 1px solid var(--line); }
+.official-structure-card h3 { max-width: 760px; margin: 25px 0 30px; color: var(--blue-dark); font-size: clamp(1.65rem, 3vw, 2.5rem); }
+.official-table { border-top: 1px solid var(--line); }
+.official-row { display: grid; grid-template-columns: minmax(260px, .9fr) 1.35fr; gap: 28px; padding: 15px 0; border-bottom: 1px solid var(--line); }
+.official-row strong { color: var(--blue-dark); font-size: .88rem; line-height: 1.35; }
+.official-row > span, .official-names { color: var(--muted); font-size: .88rem; line-height: 1.5; }
+.official-group { background: rgba(220,231,244,.22); padding-left: 14px; padding-right: 14px; }
+.official-names { display: grid; gap: 3px; }
+.official-subheading { margin: 28px 0 0; padding: 13px 0 10px; color: var(--red); font-size: .72rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+@media (max-width: 720px) {
+  .official-structure-card { padding: 28px 22px; }
+  .official-row { grid-template-columns: 1fr; gap: 5px; }
+  .official-group { padding-left: 10px; padding-right: 10px; }
 }
