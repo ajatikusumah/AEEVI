@@ -56,4 +56,27 @@ tabs.forEach((tab) => {
   });
 });
 
+
+const munasCountdown = document.querySelector('[data-munas-countdown]');
+if (munasCountdown) {
+  const munasTarget = new Date('2026-09-26T09:00:00+07:00').getTime();
+  const daysNode = munasCountdown.querySelector('[data-munas-days]');
+  const hoursNode = munasCountdown.querySelector('[data-munas-hours]');
+  const minutesNode = munasCountdown.querySelector('[data-munas-minutes]');
+
+  const updateMunasCountdown = () => {
+    const remaining = munasTarget - Date.now();
+    if (remaining <= 0) {
+      munasCountdown.innerHTML = '<div class="munas-live-state">MUNAS AEEVI 2026 sedang berlangsung atau telah selesai.</div>';
+      return;
+    }
+    daysNode.textContent = String(Math.floor(remaining / 86400000)).padStart(2, '0');
+    hoursNode.textContent = String(Math.floor(remaining / 3600000) % 24).padStart(2, '0');
+    minutesNode.textContent = String(Math.floor(remaining / 60000) % 60).padStart(2, '0');
+  };
+
+  updateMunasCountdown();
+  window.setInterval(updateMunasCountdown, 30000);
+}
+
 document.getElementById('current-year')?.replaceChildren(String(new Date().getFullYear()));
