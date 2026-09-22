@@ -433,3 +433,51 @@ h3 { line-height: 1.2; }
   .official-row { grid-template-columns: 1fr; gap: 5px; }
   .official-group { padding-left: 10px; padding-right: 10px; }
 }
+
+
+/* MUNAS AEEVI 2026 highlight */
+.munas-highlight { overflow: hidden; }
+.munas-panel { position: relative; display: grid; grid-template-columns: 1.08fr .92fr; gap: 28px; align-items: stretch; padding: 42px; background: linear-gradient(130deg, #dce7f4, #f5f3ef); border: 1px solid rgba(78,111,169,.18); overflow: hidden; }
+.munas-panel::after { content: ""; position: absolute; width: 420px; height: 420px; right: -170px; top: -230px; border: 1px solid rgba(241,75,70,.32); border-radius: 50%; pointer-events: none; }
+.munas-copy, .munas-visual { position: relative; z-index: 1; }
+.munas-date-label, .munas-visual-label, .munas-event > span { color: var(--red); font-size: .68rem; font-weight: 800; letter-spacing: .14em; }
+.munas-copy h3 { max-width: 610px; margin: 24px 0 18px; color: var(--blue-dark); font-family: var(--display); font-size: clamp(2rem, 3.8vw, 3.25rem); line-height: 1.08; letter-spacing: -.045em; }
+.munas-lead { max-width: 540px; margin: 0; color: var(--muted); font-size: 1rem; }
+.munas-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 18px; margin-top: 30px; }
+.munas-actions .text-link { margin-top: 0; }
+.munas-visual { padding: 28px; background: var(--navy); color: #fff; border-radius: 20px; box-shadow: 0 20px 45px rgba(20,45,85,.17); overflow: hidden; }
+.munas-visual::after { content: ""; position: absolute; width: 280px; height: 280px; right: -130px; top: -120px; border: 1px solid rgba(78,111,169,.48); border-radius: 50%; }
+.munas-visual-label { position: relative; z-index: 1; color: #b7cae5; }
+.munas-countdown { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin: 18px 0 24px; }
+.munas-count-unit { padding: 14px 8px 12px; text-align: center; border-radius: 13px; background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.10); }
+.munas-count-unit strong { display: block; color: #ff9b96; font-family: var(--display); font-size: 2.15rem; line-height: 1; }
+.munas-count-unit span { display: block; margin-top: 7px; color: #b7c6da; font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.munas-rsvp { position: relative; z-index: 1; display: flex; align-items: center; gap: 16px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.18); }
+.munas-qr { display: grid; place-items: center; width: 108px; height: 108px; padding: 8px; flex: none; background: #fff; border-radius: 10px; }
+.munas-qr img { display: block; width: 100%; height: 100%; }
+.munas-rsvp strong { display: block; font-family: var(--display); font-size: 1.05rem; }
+.munas-rsvp p { margin: 5px 0 8px; color: #cbd8e1; font-size: .76rem; line-height: 1.45; }
+.munas-rsvp a { color: #ff9b96; font-size: .72rem; font-weight: 800; }
+.munas-events { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 16px; }
+.munas-event { position: relative; min-height: 190px; padding: 25px; background: var(--white); border: 1px solid var(--line); transition: transform .2s ease, box-shadow .2s ease; }
+.munas-event:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+.munas-event::before { content: ""; position: absolute; top: 0; left: 25px; right: 25px; height: 4px; border-radius: 0 0 8px 8px; background: var(--blue); }
+.munas-event:nth-child(2)::before { background: #f6c356; }
+.munas-event:nth-child(3)::before { background: var(--red); }
+.munas-event h3 { margin: 20px 0 10px; color: var(--blue-dark); font-size: 1.15rem; }
+.munas-event p { margin: 0; color: var(--muted); font-size: .82rem; line-height: 1.5; }
+.munas-event b { display: inline-block; margin-top: 17px; padding: 6px 10px; border-radius: 999px; background: var(--blue-soft); color: var(--blue-dark); font-size: .68rem; }
+
+@media (max-width: 900px) {
+  .munas-panel { grid-template-columns: 1fr; }
+  .munas-copy h3 { max-width: 700px; }
+}
+@media (max-width: 720px) {
+  .munas-panel { padding: 27px 22px; }
+  .munas-events { grid-template-columns: 1fr; }
+  .munas-rsvp { align-items: flex-start; }
+}
+@media (max-width: 460px) {
+  .munas-count-unit strong { font-size: 1.7rem; }
+  .munas-rsvp { flex-direction: column; }
+}
