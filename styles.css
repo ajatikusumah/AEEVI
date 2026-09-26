@@ -513,3 +513,28 @@ h3 { line-height: 1.2; }
   .health-feed-heading h3 { font-size: 1.15rem; }
   .health-watch-note { margin-top: -4px; }
 }
+
+/* AEEVI calendar archive */
+.calendar-archive { display: grid; gap: 34px; margin-top: 12px; }
+.calendar-year { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 26px; padding-top: 24px; border-top: 1px solid var(--line); }
+.calendar-year-heading > span { display: inline-block; color: var(--red); font-family: var(--display); font-size: 2rem; font-weight: 800; letter-spacing: -.06em; }
+.calendar-year-heading h3 { margin: 7px 0 0; color: var(--blue-dark); font-size: .9rem; }
+.calendar-events { border-top: 1px solid var(--line); }
+.calendar-event { display: grid; grid-template-columns: 94px minmax(0, 1fr); gap: 19px; padding: 20px 16px; border-bottom: 1px solid var(--line); background: transparent; }
+.calendar-event-featured { background: #f1f5fa; border-left: 3px solid var(--red); }
+.calendar-event time { display: flex; flex-direction: column; align-items: flex-start; color: var(--red); font-family: var(--display); }
+.calendar-event time span { font-size: 1.05rem; font-weight: 800; line-height: 1.15; }
+.calendar-event time small { margin-top: 3px; font-size: .65rem; font-weight: 800; letter-spacing: .1em; }
+.calendar-event-type { color: var(--blue); font-size: .63rem; font-weight: 800; letter-spacing: .12em; }
+.calendar-event h4 { margin: 6px 0 5px; color: var(--blue-dark); font-family: var(--display); font-size: 1rem; line-height: 1.35; }
+.calendar-event p { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.55; }
+.calendar-source-note { margin: 28px 0 0; padding: 16px 18px; background: var(--blue-soft); color: var(--blue-dark); font-size: .76rem; line-height: 1.55; }
+@media (max-width: 720px) {
+  .calendar-year { grid-template-columns: 1fr; gap: 14px; }
+  .calendar-year-heading { display: flex; align-items: baseline; gap: 12px; }
+  .calendar-year-heading h3 { margin: 0; }
+}
+@media (max-width: 460px) {
+  .calendar-event { grid-template-columns: 72px minmax(0, 1fr); gap: 12px; padding: 16px 10px; }
+  .calendar-event h4 { font-size: .9rem; }
+}
