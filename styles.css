@@ -586,3 +586,9 @@ h3 { line-height: 1.2; }
   .hero-kicker { font-size: .72rem; line-height: 1.4; }
 }
 @media (prefers-reduced-motion: reduce) { .hero-slide { transition: none; } }
+
+/* Keep the expanded homepage carousel indicators usable on small screens. */
+.hero-dots { max-width: min(440px, calc(100vw - 140px)); overflow-x: auto; scrollbar-width: none; }
+.hero-dots::-webkit-scrollbar { display: none; }
+.hero-dot { flex: 0 0 18px; width: 18px; height: 8px; }
+@media (max-width: 720px) { .hero-carousel-controls { gap: 12px; } .hero-dots { max-width: calc(100vw - 138px); } }
