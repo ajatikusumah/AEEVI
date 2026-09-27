@@ -63,7 +63,16 @@ document.getElementById('current-year')?.replaceChildren(String(new Date().getFu
 const carousel = document.querySelector('.hero-carousel');
 if (carousel) {
   const slides = [...carousel.querySelectorAll('.hero-slide')];
-  const dots = [...carousel.querySelectorAll('.hero-dot')];
+  const dotNav = carousel.querySelector('.hero-dots');
+  const dots = slides.map((_, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = `hero-dot${i === 0 ? ' is-active' : ''}`;
+    dot.setAttribute('aria-label', `Tampilkan foto ${i + 1} dari ${slides.length}`);
+    if (i === 0) dot.setAttribute('aria-current', 'true');
+    dotNav.append(dot);
+    return dot;
+  });
   let active = 0;
   let timer;
   const show = (index) => {
