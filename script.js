@@ -59,3 +59,38 @@ tabs.forEach((tab) => {
 
 
 document.getElementById('current-year')?.replaceChildren(String(new Date().getFullYear()));
+
+const carousel = document.querySelector('.hero-carousel');
+if (carousel) {
+  const slides = [...carousel.querySelectorAll('.hero-slide')];
+  const dots = [...carousel.querySelectorAll('.hero-dot')];
+  let active = 0;
+  let timer;
+  const show = (index) => {
+    active = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      const visible = i === active;
+      slide.classList.toggle('is-active', visible);
+      slide.setAttribute('aria-hidden', String(!visible));
+      slide.querySelectorAll('a').forEach(link => { link.tabIndex = visible ? 0 : -1; });
+      dots[i].classList.toggle('is-active', visible);
+      if (visible) dots[i].setAttribute('aria-current', 'true');
+      else dots[i].removeAttribute('aria-current');
+    });
+  };
+  const stop = () => clearInterval(timer);
+  const play = () => {
+    stop();
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+      timer = setInterval(() => show(active + 1), 6000);
+  };
+  carousel.querySelector('.hero-prev').addEventListener('click', () => { show(active - 1); play(); });
+  carousel.querySelector('.hero-next').addEventListener('click', () => { show(active + 1); play(); });
+  dots.forEach((dot, i) => dot.addEventListener('click', () => { show(i); play(); }));
+  carousel.addEventListener('mouseenter', stop);
+  carousel.addEventListener('mouseleave', play);
+  carousel.addEventListener('focusin', stop);
+  carousel.addEventListener('focusout', event => { if (!carousel.contains(event.relatedTarget)) play(); });
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : play());
+  play();
+}
