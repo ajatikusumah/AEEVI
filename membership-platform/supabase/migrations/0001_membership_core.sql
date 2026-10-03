@@ -461,7 +461,7 @@ using (
 drop policy if exists admin_users_read_self_or_admin on public.admin_users;
 create policy admin_users_read_self_or_admin
 on public.admin_users for select to authenticated
-using (auth_user_id = (select auth.uid()) or public.is_membership_admin());
+using (auth_user_id = (select auth.uid()) or public.has_membership_role(array['superadmin']::public.admin_role[]));
 
 drop policy if exists audit_log_admin_read on public.audit_log;
 create policy audit_log_admin_read
@@ -537,7 +537,7 @@ create policy admins_delete_payment_evidence
 on storage.objects for delete to authenticated
 using (
   bucket_id = 'payment-evidence'
-  and public.is_membership_admin()
+  and public.has_membership_role(array['membership_admin', 'superadmin']::public.admin_role[])
 );
 
 grant execute on function public.is_membership_admin() to authenticated;
