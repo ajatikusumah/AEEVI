@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Formulir pendaftaran dan registrasi ulang anggota AEEVI.">
+  <title>Gabung AEEVI</title>
+  <link rel="icon" href="../assets/aeevi-favicon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="membership.css">
+</head>
+<body id="top">
+  <header class="site-header">
+    <div class="top-line"></div>
+    <div class="container nav-wrap">
+      <a class="brand" href="../index.html" aria-label="AEEVI beranda"><img src="../assets/aeevi-logo-cropped.png" alt="Logo AEEVI"></a>
+      <nav class="main-nav" aria-label="Navigasi utama">
+        <a href="../index.html">Beranda</a><a href="../membership.html">Keanggotaan</a><a href="../contact.html">Kontak</a>
+      </nav>
+      <a class="nav-cta" href="../membership.html">Tentang keanggotaan <span>↗</span></a>
+    </div>
+  </header>
+  <main class="join-main">
+    <section class="join-hero">
+      <div class="container join-hero-inner">
+        <p class="eyebrow"><span class="eyebrow-mark">AEEVI</span> Pendaftaran anggota</p>
+        <h1>Gabung dengan jejaring<br>epidemiologi veteriner.</h1>
+        <p>Ajukan keanggotaan baru atau registrasi ulang. Sekretariat memeriksa data dan bendahara memvalidasi pembayaran sebelum status anggota diperbarui.</p>
+        <div class="join-period" id="window-status" role="status">Memeriksa periode pendaftaran…</div>
+      </div>
+    </section>
+
+    <section class="section-pad section-white">
+      <div class="container join-layout">
+        <div class="join-aside">
+          <p class="eyebrow"><span class="eyebrow-mark">ALUR</span> Cara mendaftar</p>
+          <h2>Empat langkah menuju status terverifikasi.</h2>
+          <ol class="join-steps">
+            <li><b>Masuk dengan email.</b> Tautan masuk dikirim ke alamat yang Anda daftarkan.</li>
+            <li><b>Isi profil.</b> Sertakan asal wilayah, institusi, disiplin, dan kontak aktif.</li>
+            <li><b>Kirim bukti pembayaran.</b> Bukti disimpan secara privat untuk pemeriksaan bendahara.</li>
+            <li><b>Pantau hasil.</b> NRA dan status iuran tampil setelah pengurus menyelesaikan validasi.</li>
+          </ol>
+          <p class="join-note">NRA anggota lama dipertahankan. NRA anggota baru diterbitkan setelah pengajuan disetujui.</p>
+        </div>
+
+        <div class="join-panel">
+          <div id="setup-notice" class="notice notice-info" hidden></div>
+          <div id="auth-panel">
+            <h2>Masuk atau buat akun</h2>
+            <p>Masukkan email aktif. Kami mengirim tautan masuk untuk memverifikasi alamat email Anda.</p>
+            <form id="login-form" class="join-form">
+              <label>Email aktif
+                <input type="email" id="login-email" autocomplete="email" required>
+              </label>
+              <button class="button button-primary" type="submit">Kirim tautan masuk <span>↗</span></button>
+            </form>
+            <p id="login-message" class="form-message" aria-live="polite"></p>
+          </div>
+
+          <div id="member-panel" hidden>
+            <div class="panel-heading">
+              <div><p class="eyebrow"><span class="eyebrow-mark">AKUN</span> Anggota</p><h2 id="account-email"></h2></div>
+              <button id="signout-button" class="button button-outline" type="button">Keluar</button>
+            </div>
+            <div id="member-summary" class="member-summary" hidden></div>
+            <form id="application-form" class="join-form">
+              <h3>Formulir pendaftaran</h3>
+              <label>Jenis pengajuan
+                <select name="kind" id="application-kind" required>
+                  <option value="new">Anggota baru</option>
+                  <option value="renewal">Registrasi ulang anggota lama</option>
+                </select>
+              </label>
+              <label id="nra-field" hidden>NRA yang sudah dimiliki
+                <input name="nra" id="nra-input" autocomplete="off" placeholder="Contoh: B20230001">
+              </label>
+              <label>Nama lengkap
+                <input name="fullName" autocomplete="name" required maxlength="180">
+              </label>
+              <div class="form-row">
+                <label>Institusi / tempat bekerja
+                  <input name="institution" maxlength="180">
+                </label>
+                <label>Disiplin / bidang
+                  <input name="discipline" maxlength="120">
+                </label>
+              </div>
+              <div class="form-row">
+                <label>Provinsi
+                  <input name="province" autocomplete="address-level1" maxlength="100" required>
+                </label>
+                <label>Kabupaten / kota
+                  <input name="cityOrRegency" autocomplete="address-level2" maxlength="100">
+                </label>
+              </div>
+              <label>Nomor WhatsApp
+                <input name="whatsapp" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40" placeholder="+62…">
+              </label>
+              <div class="form-row">
+                <label>Jumlah yang dibayarkan (Rp)
+                  <input name="amountIdr" type="number" min="1" step="1" required>
+                </label>
+                <label>Tanggal pembayaran
+                  <input name="paidOn" type="date" required>
+                </label>
+              </div>
+              <label>Bukti pembayaran (PDF, JPG, atau PNG; maksimal 5 MB)
+                <input name="evidence" id="payment-evidence" type="file" accept=".pdf,image/jpeg,image/png" required>
+              </label>
+              <label class="consent-check">
+                <input name="consent" type="checkbox" required>
+                <span>Saya menyatakan data yang saya isi benar dan setuju menerima informasi terkait status keanggotaan serta kartu digital AEEVI. Undangan grup WhatsApp akan dikirim setelah validasi.</span>
+              </label>
+              <button class="button button-primary" type="submit" id="submit-button">Kirim pendaftaran <span>↗</span></button>
+              <p id="application-message" class="form-message" aria-live="polite"></p>
+            </form>
+
+            <section class="dashboard-block">
+              <div class="section-heading"><div><p class="eyebrow"><span class="eyebrow-mark">STATUS</span> Pengajuan saya</p><h3>Pantau registrasi dan iuran</h3></div></div>
+              <div id="dashboard-content"><p>Belum ada pengajuan pada akun ini.</p></div>
+              <div id="digital-card" class="digital-card" hidden></div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="container footer-bottom"><span>© <span id="current-year"></span> AEEVI</span><a href="../index.html">Kembali ke AEEVI ↗</a></div>
+  </footer>
+  <script src="../membership-platform/public-config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

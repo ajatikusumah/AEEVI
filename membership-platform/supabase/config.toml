@@ -1,0 +1,2 @@
+[functions.membership-api]
+verify_jwt = false

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Portal pengurus untuk memverifikasi pendaftaran anggota AEEVI.">
+  <title>Portal Pengurus — AEEVI</title>
+  <link rel="icon" href="../assets/aeevi-favicon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="membership.css">
+</head>
+<body>
+  <header class="site-header"><div class="top-line"></div><div class="container nav-wrap">
+    <a class="brand" href="../index.html" aria-label="AEEVI beranda"><img src="../assets/aeevi-logo-cropped.png" alt="Logo AEEVI"></a>
+    <nav class="main-nav" aria-label="Navigasi"><a href="../index.html">Beranda</a><a href="./">Pendaftaran anggota</a></nav>
+    <span class="nav-cta">Portal Pengurus</span>
+  </div></header>
+  <main class="section-pad section-white">
+    <div class="container join-layout">
+      <div class="join-aside"><p class="eyebrow"><span class="eyebrow-mark">AEEVI</span> Portal pengurus</p><h1>Verifikasi keanggotaan.</h1><p>Masuk dengan akun yang sudah diaktifkan sebagai pengurus. Hak akses mengikuti peran yang diberikan admin.</p></div>
+      <section class="join-panel">
+        <div id="setup-notice" class="notice notice-info" hidden></div>
+        <div id="admin-auth">
+          <h2>Masuk pengurus</h2>
+          <form id="admin-login" class="join-form"><label>Email pengurus<input id="admin-email" type="email" autocomplete="email" required></label><button class="button button-primary" type="submit">Kirim tautan masuk ↗</button></form>
+          <p id="admin-message" class="form-message" aria-live="polite"></p>
+        </div>
+        <div id="admin-panel" hidden>
+          <div class="panel-heading"><div><p class="eyebrow"><span class="eyebrow-mark">PENGURUS</span> Antrian pendaftaran</p><h2 id="admin-account"></h2></div><button id="admin-signout" class="button button-outline" type="button">Keluar</button></div>
+          <div class="admin-tools"><button id="refresh-queue" class="button button-outline" type="button">Muat ulang</button><button id="export-members" class="button button-primary" type="button">Unduh Excel</button></div>
+          <p id="queue-message" class="form-message" aria-live="polite"></p>
+          <div id="application-queue" class="admin-queue"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="../membership-platform/public-config.js"></script>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
