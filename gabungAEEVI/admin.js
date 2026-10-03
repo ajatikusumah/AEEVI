@@ -43,7 +43,7 @@ async function loadQueue() {
       const card = document.createElement("article");
       card.className = "status-item admin-app";
       addText(card, "strong", "", `${app.kind === "new" ? "Anggota baru" : "Registrasi ulang"} · ${app.full_name}`);
-      addText(card, "p", "", `Status: ${app.status} · Dikirim: ${new Date(app.submitted_at).toLocaleString("id-ID")}`);
+      addText(card, "p", "", `Status: ${app.status} · Dikirim: ${new Date(app.submitted_at).toLocaleString("id-ID")}`);\n      if (app.possible_duplicate) addText(card, "p", "duplicate-flag", "Perlu pemeriksaan kemungkinan duplikasi sebelum disetujui.");
       addText(card, "p", "", `NRA pengajuan: ${app.requested_nra || "belum ada"} · Institusi: ${app.institution || "belum diisi"}`);
       addText(card, "p", "", `Wilayah: ${[app.city_or_regency, app.province].filter(Boolean).join(", ") || "belum diisi"} · WhatsApp: ${app.whatsapp}`);
       addText(card, "p", "", `Email: ${app.email}`);
@@ -91,13 +91,13 @@ async function loadQueue() {
           button.className = decision === "approve" ? "button button-primary" : "button button-outline";
           button.textContent = label;
           button.addEventListener("click", async () => {
-            const note = decision === "needs_correction" || decision === "rejected"
+            const duplicateChecked = decision === "approve" && app.possible_duplicate\n              ? window.confirm("Ada kecocokan email atau nama dengan master anggota. Saya sudah memeriksa dan memastikan keputusan untuk pengajuan ini.")\n              : !app.possible_duplicate;\n            if (decision === "approve" && !duplicateChecked) return;\n            const note = decision === "needs_correction" || decision === "rejected"
               ? window.prompt("Catatan untuk pemohon:") || ""
               : "";
             if ((decision === "needs_correction" || decision === "rejected") && !note.trim()) return;
             button.disabled = true;
             try {
-              await call("review-application", { applicationId: app.id, decision, note });
+              await call("review-application", { applicationId: app.id, decision, note, duplicateChecked });
               await loadQueue();
             } catch (error) { message(error.message, "error"); button.disabled = false; }
           });
