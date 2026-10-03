@@ -8,7 +8,7 @@ The AEEVI backend setup project has been provisioned in Supabase:
 - Project reference: `nanmvocarbimrbuwmstu`
 - Region: Singapore (`ap-southeast-1`)
 - Status: healthy
-- Database migrations: core schema, 2027–2030 registration windows, and RLS helper-function permission hardening are applied.
+- Database migrations: core schema, 2027–2030 registration windows, and RLS role-check helpers have been moved into a private schema.
 - Edge Function: `membership-api`, version 1, active.
 
 The project contains no member records and no operator accounts. Public registration is not yet activated: Auth redirect URLs and SMTP, the first superadmin, public frontend configuration, and the acceptance checks below remain outstanding.
@@ -38,7 +38,7 @@ npx supabase db push --linked
 npx supabase functions deploy membership-api --project-ref <AEEVI_PROJECT_REF>
 ```
 
-The versioned migration files in `membership-platform/supabase/migrations/` create the schema and private payment-evidence bucket, seed Jan 1–30 and Jun 1–30 windows for 2027–2030, and revoke public/anon execution of the RLS helper functions. Closing timestamps are exclusive, at midnight after the final registration day. These migrations are already applied to the setup project.
+The versioned migration files in `membership-platform/supabase/migrations/` create the schema and private payment-evidence bucket, seed Jan 1–30 and Jun 1–30 windows for 2027–2030, and move privileged role checks into a private schema and restrict public/anon execution. Closing timestamps are exclusive, at midnight after the final registration day. These migrations are already applied to the setup project.
 
 Before production, run all checks in `TEST_PLAN.md` against a separate staging project. Do not import the member master until access controls, evidence storage, payment verification, NRA assignment and Excel export pass.
 
