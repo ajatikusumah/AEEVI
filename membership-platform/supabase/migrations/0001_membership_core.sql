@@ -359,14 +359,14 @@ begin
   )
   values (
     p_actor_id, 'approve_application', 'application', p_application_id::text,
-    jsonb_build_object('member_id', v_member_id, 'nra', v_nra, 'kind', v_application.kind)
+    jsonb_build_object('member_id', v_member_id, 'nra', v_nra, 'kind', v_application.kind, 'possible_duplicate', v_application.possible_duplicate, 'duplicate_checked', p_duplicate_checked)
   );
 
   return query select v_member_id, v_nra;
 end;
 $function$;
 
-revoke all on function public.approve_membership_application(uuid, uuid) from public, anon, authenticated;
+revoke all on function public.approve_membership_application(uuid, uuid, boolean) from public, anon, authenticated;
 grant execute on function public.approve_membership_application(uuid, uuid) to service_role;
 
 alter table public.registration_windows enable row level security;
