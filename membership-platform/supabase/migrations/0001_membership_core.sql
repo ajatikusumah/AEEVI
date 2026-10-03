@@ -105,6 +105,7 @@ create table if not exists public.applications (
   status public.application_status not null default 'submitted',
   applicant_note text,
   reviewer_note text,
+  possible_duplicate boolean not null default false,
   submitted_at timestamptz not null default now(),
   reviewed_by uuid references auth.users(id),
   reviewed_at timestamptz,
@@ -226,7 +227,8 @@ for each row execute function public.prevent_nra_reassignment();
 -- Sequence format follows the established B + year + four-digit sequence pattern.
 create or replace function public.approve_membership_application(
   p_application_id uuid,
-  p_actor_id uuid
+  p_actor_id uuid,
+  p_duplicate_checked boolean default false
 )
 returns table (approved_member_id uuid, assigned_nra text)
 language plpgsql
@@ -270,6 +272,10 @@ begin
   where id = v_application.window_id;
   if v_year is null then
     raise exception 'Application has no registration year';
+  end if;
+
+  if v_application.possible_duplicate and not p_duplicate_checked then
+    raise exception 'Possible duplicate requires explicit review';
   end if;
 
   if v_application.kind = 'renewal' then
@@ -367,7 +373,7 @@ end;
 $function$;
 
 revoke all on function public.approve_membership_application(uuid, uuid, boolean) from public, anon, authenticated;
-grant execute on function public.approve_membership_application(uuid, uuid) to service_role;
+grant execute on function public.approve_membership_application(uuid, uuid, boolean) to service_role;
 
 alter table public.registration_windows enable row level security;
 alter table public.members enable row level security;
