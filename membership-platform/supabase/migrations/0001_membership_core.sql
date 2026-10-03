@@ -265,6 +265,13 @@ begin
     raise exception 'A verified payment is required before approval';
   end if;
 
+  select calendar_year into v_year
+  from public.registration_windows
+  where id = v_application.window_id;
+  if v_year is null then
+    raise exception 'Application has no registration year';
+  end if;
+
   if v_application.kind = 'renewal' then
     v_member_id := v_application.member_id;
     if v_member_id is null and v_application.requested_nra is not null then
@@ -304,7 +311,7 @@ begin
       v_application.category, v_application.discipline, v_application.institution,
       v_application.province, v_application.city_or_regency, v_application.email,
       v_application.whatsapp, 'active',
-      (timezone('Asia/Jakarta', now()))::date
+      (timezone('Asia/Jakarta', v_application.submitted_at))::date
     )
     returning id, nra into v_member_id, v_nra;
 
@@ -400,7 +407,7 @@ with check (public.has_membership_role(array['registrar', 'membership_admin']::p
 drop policy if exists aliases_admin_only on public.member_name_aliases;
 create policy aliases_admin_only
 on public.member_name_aliases for select to authenticated
-using (public.is_membership_admin());
+using (public.has_membership_role(array['membership_admin', 'superadmin']::public.admin_role[]));
 
 drop policy if exists retired_nras_admin_only on public.retired_nras;
 create policy retired_nras_admin_only
@@ -410,7 +417,7 @@ using (public.is_membership_admin());
 drop policy if exists applications_owner_or_admin_read on public.applications;
 create policy applications_owner_or_admin_read
 on public.applications for select to authenticated
-using (applicant_auth_user_id = (select auth.uid()) or public.is_membership_admin());
+using (applicant_auth_user_id = (select auth.uid()) or public.has_membership_role(array['registrar', 'membership_admin', 'superadmin']::public.admin_role[]));
 
 drop policy if exists applications_admin_update on public.applications;
 create policy applications_admin_update
