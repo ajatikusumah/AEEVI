@@ -70,6 +70,31 @@ function renderCard(member) {
   card.hidden = false;
 }
 function renderDashboard(data) {
+  const correction = (data.applications || []).find((app) => app.status === "needs_correction");
+  const evidenceInput = document.querySelector("#payment-evidence");
+  const submitButton = document.querySelector("#submit-button");
+  if (correction) {
+    applicationForm.dataset.revisingId = correction.id;
+    applicationForm.elements.namedItem("kind").value = correction.kind;
+    applicationForm.elements.namedItem("nra").value = correction.requested_nra || "";
+    applicationForm.elements.namedItem("fullName").value = correction.full_name || "";
+    applicationForm.elements.namedItem("institution").value = correction.institution || "";
+    applicationForm.elements.namedItem("discipline").value = correction.discipline || "";
+    applicationForm.elements.namedItem("province").value = correction.province || "";
+    applicationForm.elements.namedItem("cityOrRegency").value = correction.city_or_regency || "";
+    applicationForm.elements.namedItem("whatsapp").value = correction.whatsapp || "";
+    applicationForm.elements.namedItem("consent").checked = true;
+    const hasUsablePayment = (correction.payment_submissions || []).some((payment) => ["pending", "verified"].includes(payment.status));
+    evidenceInput.required = !hasUsablePayment;
+    applicationKind.dispatchEvent(new Event("change"));
+    submitButton.textContent = "Kirim perbaikan";
+    setFormEnabled(Boolean(sessionUser));
+    setMessage(applicationMessage, "Pengurus meminta perbaikan. Perbarui data di bawah ini.", "");
+  } else if (applicationForm.dataset.revisingId) {
+    delete applicationForm.dataset.revisingId;
+    evidenceInput.required = true;
+    submitButton.innerHTML = "Kirim pendaftaran <span>↗</span>";
+  }
   const target = document.querySelector("#dashboard-content");
   target.replaceChildren();
   const rows = [];
@@ -143,7 +168,7 @@ async function loadWindow() {
     } else {
       windowStatus.textContent = "Pendaftaran ditutup. Periode rutin: 1–30 Januari dan 1–30 Juni.";
     }
-    setFormEnabled(Boolean(activeWindow && sessionUser));
+    setFormEnabled(Boolean(sessionUser && (activeWindow || applicationForm.dataset.revisingId)));
   } catch {
     windowStatus.textContent = "Periode pendaftaran belum dapat diperiksa.";
     setFormEnabled(false);
@@ -202,22 +227,28 @@ if (!config.url || !config.publishableKey) {
 
   applicationForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (!activeWindow || !sessionUser) {
+    const revisingId = applicationForm.dataset.revisingId || null;
+    if (!sessionUser || (!activeWindow && !revisingId)) {
       setMessage(applicationMessage, "Masuk dan tunggu periode pendaftaran dibuka.", "error");
       return;
     }
     const form = new FormData(applicationForm);
     const file = form.get("evidence");
-    if (!(file instanceof File) || !file.size || file.size > 5 * 1024 * 1024 ||
-        !["application/pdf", "image/jpeg", "image/png"].includes(file.type)) {
+    const hasFile = file instanceof File && file.size > 0;
+    if (!revisingId && !hasFile) {
+      setMessage(applicationMessage, "Unggah bukti pembayaran untuk mengirim pendaftaran.", "error");
+      return;
+    }
+    if (hasFile && (file.size > 5 * 1024 * 1024 ||
+        !["application/pdf", "image/jpeg", "image/png"].includes(file.type))) {
       setMessage(applicationMessage, "Unggah bukti PDF, JPG, atau PNG dengan ukuran maksimal 5 MB.", "error");
       return;
     }
     const button = document.querySelector("#submit-button");
     button.disabled = true;
-    setMessage(applicationMessage, "Mengirim pengajuan dan mengunggah bukti pembayaran…");
+    setMessage(applicationMessage, hasFile ? "Mengirim data dan bukti pembayaran…" : "Mengirim perbaikan data…");
     try {
-      const created = await invoke("submit-application", {
+      const fields = {
         kind: form.get("kind"),
         nra: form.get("nra"),
         fullName: form.get("fullName"),
@@ -227,29 +258,41 @@ if (!config.url || !config.publishableKey) {
         cityOrRegency: form.get("cityOrRegency"),
         whatsapp: form.get("whatsapp"),
         consent: form.get("consent") === "on",
-      });
-      const applicationId = created.application.id;
-      const safeName = file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g, "-").slice(-90) || "bukti";
-      const evidencePath = `${applicationId}/${crypto.randomUUID()}-${safeName}`;
-      const { error: uploadError } = await supabase.storage.from("payment-evidence")
-        .upload(evidencePath, file, { upsert: false, contentType: file.type });
-      if (uploadError) throw new Error(`Pengajuan ${applicationId} tercatat, tetapi unggah bukti gagal: ${uploadError.message}. Hubungi sekretariat dengan nomor pengajuan ini.`);
-      await invoke("attach-payment", {
-        applicationId,
-        evidencePath,
-        amountIdr: Number(form.get("amountIdr")),
-        paidOn: form.get("paidOn"),
-      });
-      setMessage(applicationMessage, `Pengajuan berhasil dikirim. Nomor pengajuan: ${applicationId}. Status pembayaran menunggu pemeriksaan bendahara.`, "success");
+      };
+      let applicationId;
+      if (revisingId) {
+        await invoke("revise-application", { applicationId: revisingId, ...fields });
+        applicationId = revisingId;
+      } else {
+        const created = await invoke("submit-application", fields);
+        applicationId = created.application.id;
+      }
+      if (hasFile) {
+        const safeName = file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g, "-").slice(-90) || "bukti";
+        const evidencePath = `${applicationId}/${crypto.randomUUID()}-${safeName}`;
+        const { error: uploadError } = await supabase.storage.from("payment-evidence")
+          .upload(evidencePath, file, { upsert: false, contentType: file.type });
+        if (uploadError) throw new Error(`Pengajuan ${applicationId} tersimpan, tetapi unggah bukti gagal: ${uploadError.message}. Hubungi sekretariat dengan nomor ini.`);
+        await invoke("attach-payment", {
+          applicationId,
+          evidencePath,
+          amountIdr: Number(form.get("amountIdr")),
+          paidOn: form.get("paidOn"),
+        });
+      }
+      setMessage(applicationMessage, `Pengajuan ${revisingId ? "perbaikan" : "baru"} berhasil dikirim. Nomor pengajuan: ${applicationId}.`, "success");
       applicationForm.reset();
+      delete applicationForm.dataset.revisingId;
       nraField.hidden = true;
       document.querySelector("#nra-input").required = false;
+      evidenceInput.required = true;
+      button.innerHTML = "Kirim pendaftaran <span>↗</span>";
       await refreshDashboard();
     } catch (error) {
       setMessage(applicationMessage, error.message || "Pengajuan gagal dikirim.", "error");
     } finally {
       button.disabled = false;
-      setFormEnabled(Boolean(activeWindow && sessionUser));
+      setFormEnabled(Boolean(sessionUser && (activeWindow || applicationForm.dataset.revisingId)));
     }
   });
 
