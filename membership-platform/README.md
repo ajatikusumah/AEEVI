@@ -36,7 +36,7 @@ Automatic approval email delivery and WhatsApp messaging are not implemented. Af
 1. Create a dedicated Supabase project owned by AEEVI. Enable email verification, configure the Auth redirect URLs for `https://aeevi.org/gabungAEEVI/` and `https://aeevi.org/gabungAEEVI/pengurus.html`, and create the private payment-evidence bucket using the migration.
 2. Apply `supabase/migrations/0001_membership_core.sql` in a staging project. Review the schema and RLS policies with the AEEVI project owner.
 3. Deploy `supabase/functions/membership-api` and configure its server-side secrets. Put only the Supabase project URL and publishable key in `membership-platform/public-config.js`; never expose the service-role key.
-4. Provision the initial named operator accounts through the trusted project-owner procedure. Add and enable the two 2027 registration windows in Jakarta time before enrollment starts.
+4. Provision the initial named operator accounts through the trusted project-owner procedure. Migration `0002_seed_registration_windows.sql` adds the 2027–2030 registration windows in Jakarta time.
 5. Run `membership-platform/TEST_PLAN.md` in staging, including role boundaries, private-file access, concurrent NRA assignment, payment verification, Excel export and recovery checks.
 6. Import the reviewed master list only after validating the import mapping. Keep unresolved source records in a manual review queue; do not infer historic dues as paid.
 7. Update the public links only after staging passes and AEEVI approves launch.
@@ -52,6 +52,8 @@ The working master contains 237 active member rows and 48 retired NRA records. T
 - `public-config.js`: browser configuration placeholders.
 - `../gabungAEEVI/`: public member and pengurus pages.
 - `TEST_PLAN.md`: staging acceptance checks.
+- `SETUP_RUNBOOK.md`: Supabase project, migration, first-admin and activation steps.
+- `supabase/migrations/0002_seed_registration_windows.sql`: scheduled registration periods for 2027–2030.
 
 ## Source references
 
