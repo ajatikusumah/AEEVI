@@ -1,4 +1,5 @@
 const config = window.AEEVI_SUPABASE_CONFIG || {};
+const ANNUAL_DUES_IDR = 200000;
 const setupNotice = document.querySelector("#setup-notice");
 const loginForm = document.querySelector("#login-form");
 const loginMessage = document.querySelector("#login-message");
@@ -142,11 +143,11 @@ function renderDashboard(data) {
       fileInput.required = true;
       fileLabel.append(fileInput);
       const amountLabel = document.createElement("label");
-      amountLabel.textContent = "Jumlah yang dibayarkan (Rp)";
+      amountLabel.textContent = "Iuran tahunan AEEVI (Rp 200.000)";
       const amountInput = document.createElement("input");
       amountInput.type = "number";
-      amountInput.min = "1";
-      amountInput.step = "1";
+      amountInput.value = String(ANNUAL_DUES_IDR);
+      amountInput.readOnly = true;
       amountInput.required = true;
       amountLabel.append(amountInput);
       const dateLabel = document.createElement("label");
