@@ -126,6 +126,69 @@ function renderDashboard(data) {
       note.textContent = `Catatan pengurus: ${app.reviewer_note}`;
       item.append(note);
     }
+    const payments = app.payment_submissions || [];
+    const mayRetryPayment = app.status === "submitted" &&
+      (payments.length === 0 || payments.every((payment) => payment.status === "rejected"));
+    if (mayRetryPayment) {
+      const retryForm = document.createElement("form");
+      retryForm.className = "retry-payment join-form";
+      const title = document.createElement("strong");
+      title.textContent = "Kirim ulang bukti pembayaran";
+      const fileLabel = document.createElement("label");
+      fileLabel.textContent = "Bukti pembayaran";
+      const fileInput = document.createElement("input");
+      fileInput.type = "file";
+      fileInput.accept = ".pdf,image/jpeg,image/png";
+      fileInput.required = true;
+      fileLabel.append(fileInput);
+      const amountLabel = document.createElement("label");
+      amountLabel.textContent = "Jumlah yang dibayarkan (Rp)";
+      const amountInput = document.createElement("input");
+      amountInput.type = "number";
+      amountInput.min = "1";
+      amountInput.step = "1";
+      amountInput.required = true;
+      amountLabel.append(amountInput);
+      const dateLabel = document.createElement("label");
+      dateLabel.textContent = "Tanggal pembayaran";
+      const dateInput = document.createElement("input");
+      dateInput.type = "date";
+      dateInput.required = true;
+      dateLabel.append(dateInput);
+      const retryButton = document.createElement("button");
+      retryButton.type = "submit";
+      retryButton.className = "button button-primary";
+      retryButton.textContent = "Unggah bukti baru";
+      retryForm.append(title, fileLabel, amountLabel, dateLabel, retryButton);
+      retryForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const file = fileInput.files?.[0];
+        if (!file || file.size > 5 * 1024 * 1024 || !["application/pdf", "image/jpeg", "image/png"].includes(file.type)) {
+          setMessage(applicationMessage, "Pilih bukti PDF, JPG, atau PNG dengan ukuran maksimal 5 MB.", "error");
+          return;
+        }
+        retryButton.disabled = true;
+        try {
+          const safeName = file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g, "-").slice(-90) || "bukti";
+          const evidencePath = `${app.id}/${crypto.randomUUID()}-${safeName}`;
+          const { error: uploadError } = await supabase.storage.from("payment-evidence")
+            .upload(evidencePath, file, { upsert: false, contentType: file.type });
+          if (uploadError) throw uploadError;
+          await invoke("attach-payment", {
+            applicationId: app.id,
+            evidencePath,
+            amountIdr: Number(amountInput.value),
+            paidOn: dateInput.value,
+          });
+          setMessage(applicationMessage, "Bukti pembayaran baru berhasil dikirim dan menunggu pemeriksaan bendahara.", "success");
+          await refreshDashboard();
+        } catch (error) {
+          setMessage(applicationMessage, error.message || "Bukti pembayaran gagal dikirim.", "error");
+          retryButton.disabled = false;
+        }
+      });
+      item.append(retryForm);
+    }
     rows.push(item);
   }
   if (data.member) {
