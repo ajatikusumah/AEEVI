@@ -175,14 +175,30 @@ language sql
 stable
 security definer
 set search_path = ''
-as $$
+as $
   select exists (
     select 1
     from public.admin_users au
     where au.auth_user_id = (select auth.uid())
       and au.enabled
   );
-$$;
+$;
+
+create or replace function public.has_membership_role(required_roles public.admin_role[])
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $
+  select exists (
+    select 1
+    from public.admin_users au
+    where au.auth_user_id = (select auth.uid())
+      and au.enabled
+      and au.role = any(required_roles)
+  );
+$;
 
 create or replace function public.prevent_nra_reassignment()
 returns trigger
@@ -219,10 +235,11 @@ on public.registration_windows for select to anon, authenticated
 using (is_enabled = true);
 
 drop policy if exists admins_manage_windows on public.registration_windows;
-create policy admins_manage_windows
-on public.registration_windows for all to authenticated
-using (public.is_membership_admin())
-with check (public.is_membership_admin());
+drop policy if exists admins_update_windows on public.registration_windows;
+create policy admins_update_windows
+on public.registration_windows for update to authenticated
+using (public.has_membership_role(array['registrar', 'membership_admin']::public.admin_role[]))
+with check (public.has_membership_role(array['registrar', 'membership_admin']::public.admin_role[]));
 
 drop policy if exists members_read_self_or_admin on public.members;
 create policy members_read_self_or_admin
@@ -230,22 +247,21 @@ on public.members for select to authenticated
 using (auth_user_id = (select auth.uid()) or public.is_membership_admin());
 
 drop policy if exists admins_manage_members on public.members;
-create policy admins_manage_members
-on public.members for all to authenticated
-using (public.is_membership_admin())
-with check (public.is_membership_admin());
+drop policy if exists admins_update_members on public.members;
+create policy admins_update_members
+on public.members for update to authenticated
+using (public.has_membership_role(array['registrar', 'membership_admin']::public.admin_role[]))
+with check (public.has_membership_role(array['registrar', 'membership_admin']::public.admin_role[]));
 
 drop policy if exists aliases_admin_only on public.member_name_aliases;
 create policy aliases_admin_only
-on public.member_name_aliases for all to authenticated
-using (public.is_membership_admin())
-with check (public.is_membership_admin());
+on public.member_name_aliases for select to authenticated
+using (public.is_membership_admin());
 
 drop policy if exists retired_nras_admin_only on public.retired_nras;
 create policy retired_nras_admin_only
-on public.retired_nras for all to authenticated
-using (public.is_membership_admin())
-with check (public.is_membership_admin());
+on public.retired_nras for select to authenticated
+using (public.is_membership_admin());
 
 drop policy if exists applications_owner_or_admin_read on public.applications;
 create policy applications_owner_or_admin_read
@@ -255,8 +271,8 @@ using (applicant_auth_user_id = (select auth.uid()) or public.is_membership_admi
 drop policy if exists applications_admin_update on public.applications;
 create policy applications_admin_update
 on public.applications for update to authenticated
-using (public.is_membership_admin())
-with check (public.is_membership_admin());
+using (public.has_membership_role(array['registrar', 'membership_admin']::public.admin_role[]))
+with check (public.has_membership_role(array['registrar', 'membership_admin']::public.admin_role[]));
 
 drop policy if exists payments_owner_or_admin_read on public.payment_submissions;
 create policy payments_owner_or_admin_read
@@ -385,3 +401,4 @@ using (
 );
 
 grant execute on function public.is_membership_admin() to authenticated;
+grant execute on function public.has_membership_role(public.admin_role[]) to authenticated;
