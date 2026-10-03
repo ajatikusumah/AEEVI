@@ -23,36 +23,36 @@ function cors(req: Request) {
     "Vary": "Origin",
   };
 }
-function json(req: Request, body: unknown, status = 200) {
+function json(req, body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...cors(req), "Content-Type": "application/json; charset=utf-8" },
   });
 }
-function text(value: unknown, max = 180) {
+function text(value, max = 180) {
   if (typeof value !== "string") return "";
   return value.trim().slice(0, max);
 }
 function fail(message: string, status = 400) {
   return { error: message, status };
 }
-async function currentUser(req: Request) {
+async function currentUser(req) {
   const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) return null;
   const { data, error } = await db.auth.getUser(token);
   if (error || !data.user?.email_confirmed_at) return null;
   return data.user;
 }
-async function requireRole(userId: string, roles: string[]) {
+async function requireRole(userId, roles) {
   const { data, error } = await db.from("admin_users")
     .select("role")
     .eq("auth_user_id", userId)
     .eq("enabled", true)
     .maybeSingle();
   if (error || !data || !roles.includes(data.role)) return null;
-  return data.role as string;
+  return data.role;
 }
-async function writeAudit(actor: string, action: string, kind: string, id: string, details = {}) {
+async function writeAudit(actor, action, kind, id, details = {}) {
   const { error } = await db.from("audit_log").insert({
     actor_auth_user_id: actor,
     action,
@@ -63,11 +63,11 @@ async function writeAudit(actor: string, action: string, kind: string, id: strin
   if (error) throw error;
 }
 
-Deno.serve(async (req: Request) => {
+Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors(req) });
   if (req.method !== "POST") return json(req, { error: "Method not allowed" }, 405);
 
-  let body: Record<string, unknown>;
+  let body;
   try {
     body = await req.json();
   } catch {
@@ -241,9 +241,9 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
         .limit(100);
       if (error) throw error;
       const canReviewPayments = ["treasurer", "membership_admin", "superadmin"].includes(role);
-      let paymentMap = new Map<string, unknown[]>();
+      let paymentMap = new Map();
       if (canReviewPayments && applications?.length) {
-        const ids = applications.map((app: any) => app.id);
+        const ids = applications.map((app) => app.id);
         const { data: payments, error: paymentsError } = await db.from("payment_submissions")
           .select("id,application_id,calendar_year,amount_idr,paid_on,status,evidence_object_path")
           .in("application_id", ids);
@@ -254,7 +254,7 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
           paymentMap.set(payment.application_id, rows);
         }
       }
-      const queue = (applications ?? []).map((app: any) => ({
+      const queue = (applications ?? []).map((app) => ({
         ...app,
         payment_submissions: paymentMap.get(app.id) ?? [],
       }));
@@ -354,7 +354,7 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
         duesByMember.set(item.member_id, years);
       }
       const workbook = XLSX.utils.book_new();
-      const membersSheet = XLSX.utils.json_to_sheet((members ?? []).map((m: any) => ({
+      const membersSheet = XLSX.utils.json_to_sheet((members ?? []).map((m) => ({
         NRA: m.nra,
         Nama: m.full_name,
         Kategori: m.category,
@@ -369,8 +369,8 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
         Iuran_Terverifikasi: (duesByMember.get(m.id) ?? []).sort((a, b) => b - a).join(", "),
       })));
       XLSX.utils.book_append_sheet(workbook, membersSheet, "Master Anggota");
-      const duesSheet = XLSX.utils.json_to_sheet((dues ?? []).map((d: any) => ({
-        NRA: (members ?? []).find((m: any) => m.id === d.member_id)?.nra ?? "",
+      const duesSheet = XLSX.utils.json_to_sheet((dues ?? []).map((d) => ({
+        NRA: (members ?? []).find((m) => m.id === d.member_id)?.nra ?? "",
         Tahun_Iuran: d.calendar_year,
         Tanggal_Verifikasi: d.verified_at,
       })));
