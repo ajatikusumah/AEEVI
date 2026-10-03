@@ -93,7 +93,9 @@ async function loadQueue() {
           button.textContent = label;
           button.addEventListener("click", async () => {
             const duplicateChecked = decision === "approve" && app.possible_duplicate
-              ? window.confirm("Ada kecocokan email atau nama dengan master anggota. Saya sudah memeriksa dan memastikan keputusan untuk pengajuan ini.")
+              ? window.confirm(app.kind === "renewal"
+                ? "NRA registrasi ulang belum tertaut ke email akun ini. Saya sudah mencocokkan NRA dan identitas pemohon dengan data master."
+                : "Ada kecocokan email atau nama dengan master anggota. Saya sudah memeriksa dan memastikan keputusan untuk pengajuan ini.")
               : !app.possible_duplicate;
             if (decision === "approve" && !duplicateChecked) return;
             const note = decision === "needs_correction" || decision === "rejected"
