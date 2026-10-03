@@ -359,7 +359,7 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
         .select("member_id,calendar_year,verified_at");
       if (duesError) throw duesError;
 
-      const duesByMember = new Map<string, number[]>();
+      const duesByMember = new Map();
       for (const item of dues ?? []) {
         const years = duesByMember.get(item.member_id) ?? [];
         years.push(item.calendar_year);
