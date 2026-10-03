@@ -126,7 +126,6 @@ function renderDashboard(data) {
       note.textContent = `Catatan pengurus: ${app.reviewer_note}`;
       item.append(note);
     }
-    const payments = app.payment_submissions || [];
     const mayRetryPayment = app.status === "submitted" &&
       (payments.length === 0 || payments.every((payment) => payment.status === "rejected"));
     if (mayRetryPayment) {
