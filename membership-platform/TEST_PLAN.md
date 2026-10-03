@@ -11,7 +11,7 @@ Run these checks only in a dedicated non-production Supabase project after apply
 5. Within an open window, submit a new application and a renewal with an NRA. The API stores the authenticated account email, not an unverified email supplied by the form.
 6. A second active application by the same account in the same window is rejected.
 7. Upload a PDF/JPG/PNG below 5 MB. Confirm another account cannot read or replace the object. Confirm files above 5 MB and unsupported content types are rejected.
-8. An existing-member renewal preserves its NRA. If account linkage is ambiguous or conflicts with another account, approval must fail pending manual review.
+8. An existing-member renewal preserves its NRA. If the verified account/email does not match the master record, flag it for manual NRA and identity review before approval; a conflicting link to another account must fail.
 9. For an application returned for correction, update the requested fields and resubmit; confirm the review history and status remain associated with the same application.
 10. For rejected payment evidence, upload a replacement and confirm the previous payment decision remains auditable.
 
@@ -29,8 +29,8 @@ Run these checks only in a dedicated non-production Supabase project after apply
 
 1. Approval without verified payment fails and leaves the application unapproved.
 2. Submit a new application whose email or exact name matches the master. Confirm the queue flags it for duplicate review and approval is blocked until the reviewer acknowledges the check.
-3. Approve a paid new member. Verify one NRA is issued in `BYYYYNNNN` format, the application links to the member, and the NRA cannot later be changed.
-4. Approve a paid renewal. Verify the existing NRA remains unchanged and only one annual-dues record exists for that member and year.
+3. Approve a paid new member. Verify one NRA is issued in `BYYYYNNNN` format using the application's registration year, the application links to the member, and the NRA cannot later be changed.
+4. Approve a paid renewal. Verify the existing NRA remains unchanged and only one annual-dues record exists for that member and year. An unlinked renewal must show a manual identity-review flag.
 5. Attempt concurrent approvals for new members. Confirm NRA values remain unique and retired NRA values are not reused.
 6. Confirm payment and application decisions appear in the audit log.
 7. Download the Excel workbook from the pengurus page. Confirm the member and annual-dues sheets contain no payment evidence files or storage paths.
