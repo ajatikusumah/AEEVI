@@ -14,7 +14,7 @@ The implementation is in this branch, but is not active: AEEVI has not created a
 - `member_name_aliases`: reserved for reviewed historical spelling variants; unresolved source conflicts are not automatically merged.
 - `registration_windows`: editable Jakarta-time registration periods, normally 1–30 January and 1–30 June.
 - `applications`: new or renewal request, applicant identity, profile and review state. An application does not create a member record.
-- `payment_submissions` and `annual_membership_dues`: evidence and treasurer decision; only verified payment counts as paid.
+- `payment_submissions` and `annual_membership_dues`: evidence and treasurer decision; only verified payment counts as paid. The annual dues amount is Rp 200,000 per year.
 - `admin_users` and `audit_log`: allowlisted operator roles and a record of sensitive actions.
 
 Operator roles are `registrar`, `treasurer`, `membership_admin`, and `superadmin`. Accounts are provisioned by a trusted project owner; there is no public administrator sign-up. Registrar reviews applicant information, treasurer checks payment, and membership administrators complete validation and approval. Permissions are enforced server-side and in RLS.
