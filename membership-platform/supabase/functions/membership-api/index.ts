@@ -1,6 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import * as XLSX from "npm:xlsx@0.18.5";
 
+const ANNUAL_DUES_IDR = 200_000;
 const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
 const secretKeys = JSON.parse(Deno.env.get("SUPABASE_SECRET_KEYS") ?? "{}");
 const serviceKey = secretKeys.default ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -217,8 +218,8 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
       const amount = Number(body.amountIdr);
       const paidOn = text(body.paidOn, 10);
       if (!applicationId || !evidencePath.startsWith(applicationId + "/") ||
-          !Number.isSafeInteger(amount) || amount <= 0) {
-        return json(req, { error: "Data pembayaran tidak lengkap atau tidak valid." }, 400);
+          !Number.isSafeInteger(amount) || amount !== ANNUAL_DUES_IDR) {
+        return json(req, { error: "Data pembayaran tidak lengkap atau tidak valid. Iuran tahunan adalah Rp 200.000." }, 400);
       }
       const { data: application, error: appError } = await db.from("applications")
         .select("id,applicant_auth_user_id,window_id,status")
