@@ -24,7 +24,7 @@ Operator roles are `registrar`, `treasurer`, `membership_admin`, and `superadmin
 - Public registration page at `/gabungAEEVI/`, with email sign-in, registration-window status, new/renewal form, member profile and contact fields, and private payment-proof upload.
 - Applicant status page, correction resubmission, rejected-payment replacement, NRA and annual-dues display, and a printable digital membership card after approval.
 - Pengurus portal for role-scoped queue, payment review, correction/rejection, final approval, and Excel export.
-- Supabase migration with role-scoped RLS, audit records, duplicate-review flags, private evidence storage, and a transaction-safe approval routine. Renewal keeps the old NRA; a new NRA is allocated only after an authorized final approval with verified payment. Retired NRAs are never recycled.
+- Supabase migration with role-scoped RLS, audit records, duplicate-review flags, private evidence storage, and a transaction-safe approval routine. Renewal keeps the old NRA; a new NRA is allocated only after an authorized final approval with verified payment and uses the registration period's year. Unlinked renewals are flagged for human identity review. Retired NRAs are never recycled.
 - Edge Function API for public and authenticated member operations and pengurus actions.
 
 A duplicate warning is a review aid, not a conclusive identity match. Possible duplicates require a human check and acknowledgement before approval. The application does not auto-merge people by name.
