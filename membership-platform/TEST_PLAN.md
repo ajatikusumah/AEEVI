@@ -10,7 +10,7 @@ Run these checks only in a dedicated non-production Supabase project after apply
 4. With no open registration window, a valid account receives a closed-window response. Test exact Jakarta boundaries: 1 and 30 January, then 1 and 30 June.
 5. Within an open window, submit a new application and a renewal with an NRA. The API stores the authenticated account email, not an unverified email supplied by the form.
 6. A second active application by the same account in the same window is rejected.
-7. Upload a PDF/JPG/PNG below 5 MB. Confirm another account cannot read or replace the object. Confirm files above 5 MB and unsupported content types are rejected.
+7. Confirm a payment amount other than Rp 200.000 is rejected by the API and database. Upload a PDF/JPG/PNG below 5 MB. Confirm another account cannot read or replace the object. Confirm files above 5 MB and unsupported content types are rejected.
 8. An existing-member renewal preserves its NRA. If the verified account/email does not match the master record, flag it for manual NRA and identity review before approval; a conflicting link to another account must fail.
 9. For an application returned for correction, update the requested fields and resubmit; confirm the review history and status remain associated with the same application.
 10. For rejected payment evidence, upload a replacement and confirm the previous payment decision remains auditable.
