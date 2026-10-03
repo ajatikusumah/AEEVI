@@ -2,13 +2,22 @@
 
 ## Current readiness
 
-The repository contains the Supabase migration, 2027–2030 registration-window seed, Edge Function, public member page and pengurus portal. The code is not connected to a Supabase project. The Vercel account available for this work currently has no AEEVI project. No member records or credentials are stored in the repository.
+The AEEVI backend setup project has been provisioned in Supabase:
+
+- Project: `AEEVI-Membership`
+- Project reference: `nanmvocarbimrbuwmstu`
+- Region: Singapore (`ap-southeast-1`)
+- Status: healthy
+- Database migrations: core schema, 2027–2030 registration windows, and RLS helper-function permission hardening are applied.
+- Edge Function: `membership-api`, version 1, active.
+
+The project contains no member records and no operator accounts. Public registration is not yet activated: Auth redirect URLs and SMTP, the first superadmin, public frontend configuration, and the acceptance checks below remain outstanding.
 
 **Do not put a Supabase secret/service-role key in GitHub, the public configuration file, or chat.** The browser needs only the project URL and publishable key. Supabase supplies function-side secrets to the Edge Function runtime.
 
 ## 1. Create the AEEVI Supabase project
 
-An AEEVI project owner should create a dedicated Supabase project under an AEEVI-controlled account, select the required region, and keep the project credentials private. Record the project reference (the short project identifier) for deployment.
+The project above is the current setup environment. Keep enrollment closed until the acceptance checks pass and AEEVI approves activation. If AEEVI wants separate staging and production projects, create the production project under an AEEVI-controlled account and apply the same reviewed migrations there. Keep project credentials private.
 
 In Supabase Authentication:
 
@@ -29,7 +38,7 @@ npx supabase db push --linked
 npx supabase functions deploy membership-api --project-ref <AEEVI_PROJECT_REF>
 ```
 
-This applies the schema and private payment-evidence bucket in `supabase/migrations/0001_membership_core.sql`, then seeds the Jan 1–30 and Jun 1–30 windows for 2027–2030 in `0002_seed_registration_windows.sql`. Closing timestamps are exclusive, at midnight after the final registration day.
+The versioned migration files in `membership-platform/supabase/migrations/` create the schema and private payment-evidence bucket, seed Jan 1–30 and Jun 1–30 windows for 2027–2030, and revoke public/anon execution of the RLS helper functions. Closing timestamps are exclusive, at midnight after the final registration day. These migrations are already applied to the setup project.
 
 Before production, run all checks in `TEST_PLAN.md` against a separate staging project. Do not import the member master until access controls, evidence storage, payment verification, NRA assignment and Excel export pass.
 
@@ -71,4 +80,4 @@ The Edge Function uses `SUPABASE_URL` and `SUPABASE_SECRET_KEYS.default` supplie
 
 ## Access required to proceed
 
-The current session has no Supabase project or Supabase account connector. To perform the cloud setup, connect an AEEVI Supabase project or provide its project reference and arrange access for deployment. Share only the project reference and the email address of the nominated first operator here; enter secrets directly into Supabase. Do not send secret keys in chat.
+Remaining setup tasks: configure the Auth redirect URLs and production SMTP sender in Supabase; create/confirm the Auth account for `aeevi.indonesia@gmail.com` and provision it as superadmin; run the acceptance checks in a closed environment; then populate `public-config.js` with the project URL and publishable key and import only the reviewed member master. Keep the 59 unresolved historic name/NRA cases in manual review. Enter any secret values directly in Supabase, never in chat or GitHub.
