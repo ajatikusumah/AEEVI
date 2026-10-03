@@ -33,9 +33,6 @@ function text(value, max = 180) {
   if (typeof value !== "string") return "";
   return value.trim().slice(0, max);
 }
-function fail(message: string, status = 400) {
-  return { error: message, status };
-}
 async function currentUser(req) {
   const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) return null;
@@ -130,7 +127,7 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
       if (priorError) throw priorError;
       if (prior) return json(req, { error: "Sudah ada pengajuan aktif untuk periode ini.", applicationId: prior.id }, 409);
 
-      let linkedMemberId: string | null = null;
+      let linkedMemberId = null;
       if (kind === "renewal") {
         const { data: match, error: matchError } = await db.from("members")
           .select("id,email,auth_user_id")
