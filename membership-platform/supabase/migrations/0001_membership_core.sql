@@ -395,7 +395,7 @@ with check (public.has_membership_role(array['registrar', 'membership_admin']::p
 drop policy if exists members_read_self_or_admin on public.members;
 create policy members_read_self_or_admin
 on public.members for select to authenticated
-using (auth_user_id = (select auth.uid()) or public.has_membership_role(array['superadmin']::public.admin_role[]));
+using (auth_user_id = (select auth.uid()) or public.has_membership_role(array['registrar', 'membership_admin', 'superadmin']::public.admin_role[]));
 
 drop policy if exists admins_manage_members on public.members;
 drop policy if exists admins_update_members on public.members;
@@ -477,7 +477,7 @@ using (auth_user_id = (select auth.uid()) or public.has_membership_role(array['s
 drop policy if exists audit_log_admin_read on public.audit_log;
 create policy audit_log_admin_read
 on public.audit_log for select to authenticated
-using (public.is_membership_admin());
+using (public.has_membership_role(array['membership_admin', 'superadmin']::public.admin_role[]));
 
 -- No client INSERT/DELETE policies are granted for applications, payments, dues,
 -- admins or audit rows. Create and review those records through Edge Functions
