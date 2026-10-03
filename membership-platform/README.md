@@ -15,7 +15,7 @@ Recommended backend: a dedicated Supabase project for PostgreSQL, Auth, private 
 - `admin_users`: allowlisted AEEVI operator accounts and roles, provisioned by a project owner.
 - `audit_log`: append-only record of sensitive admin actions.
 
-The SQL migration establishes the core tables, uniqueness constraints, NRA immutability and private-by-default RLS. It intentionally contains no member data and no Supabase credentials.
+The SQL migration establishes the core tables, uniqueness constraints, immutable NRA assignment, role-scoped RLS and an atomic approval function. The Edge Function validates caller identity and roles, handles applications and payments, and returns an `.xlsx` export. The public registration page is available at `/gabungAEEVI/`; it stays disabled until the AEEVI Supabase URL and publishable key are configured. No member data or Supabase credentials are stored in the repository.
 
 ## Application workflow
 1. A visitor can submit only while an enabled window is open. They authenticate and verify an email address before checking status or submitting. Keep WhatsApp OTP as a later integration; do not treat NRA alone as authentication.
@@ -40,8 +40,8 @@ The SQL migration establishes the core tables, uniqueness constraints, NRA immut
 2. Apply the migration in `supabase/migrations`.
 3. Create the first administrator accounts through a trusted project-owner procedure; never expose admin self-registration.
 4. Configure secret values in the Supabase project and deployment settings. Keep only the Supabase URL and publishable key in the static client.
-5. Implement the functions and connect the existing `membership.html` page; test in staging before linking it publicly.
-6. Import the reviewed 237-row master after confirming the final import mapping. The 34 duplicate groups are resolved by retaining the first NRA and recording 38 later NRA values as retired. The workbook still contains 59 source name–NRA conflicts that require separate validation. Do not infer historical dues as verified.
+5. Configure `membership-platform/public-config.js` with the project URL and publishable key, deploy the `membership-api` Edge Function and apply the function secrets in Supabase. Add `https://aeevi.org/gabungAEEVI/` and the pengurus page to Auth redirect URLs. Run staging tests before publishing the registration links.
+6. Import the reviewed 237-row master after confirming the final import mapping. The 34 duplicate groups are resolved by retaining the first NRA and recording 38 later NRA values as retired. The workbook flags 59 source name–NRA records for review. Use only the primary name from the master list as the display name; do not import the removed alternate/comparison names. Preserve the conflict status in an internal review queue when the source NRA still needs confirmation. Do not infer historical dues as verified.
 
 ## Source references
 - Supabase Auth and RLS: https://supabase.com/docs/guides/auth and https://supabase.com/docs/guides/database/postgres/row-level-security
