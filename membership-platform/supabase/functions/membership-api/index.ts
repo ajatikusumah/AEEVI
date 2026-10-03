@@ -181,13 +181,15 @@ Deno.serve(async (req: Request) => {
       if (appError) throw appError;
       if (!application) return json(req, { error: "Pengajuan tidak ditemukan." }, 404);
 
-      const { data: object, error: objectError } = await db.schema("storage").from("objects")
-        .select("name")
-        .eq("bucket_id", "payment-evidence")
-        .eq("name", evidencePath)
-        .maybeSingle();
+      const pathParts = evidencePath.split("/");
+      if (pathParts.length !== 2) return json(req, { error: "Lokasi bukti pembayaran tidak valid." }, 400);
+      const { data: objects, error: objectError } = await db.storage
+        .from("payment-evidence")
+        .list(applicationId, { search: pathParts[1] });
       if (objectError) throw objectError;
-      if (!object) return json(req, { error: "Bukti pembayaran belum berhasil diunggah." }, 400);
+      if (!objects?.some((object) => object.name === pathParts[1])) {
+        return json(req, { error: "Bukti pembayaran belum berhasil diunggah." }, 400);
+      }
 
       const currentYear = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" })).getFullYear();
       const { data, error } = await db.from("payment_submissions").insert({
@@ -207,7 +209,7 @@ Deno.serve(async (req: Request) => {
         db.from("members").select("id,nra,full_name,institution,province,city_or_regency,status")
           .eq("auth_user_id", user.id).maybeSingle(),
         db.from("applications")
-          .select("id,kind,requested_nra,status,submitted_at,reviewer_note,window_id")
+          .select("id,kind,requested_nra,status,submitted_at,reviewer_note,window_id,payment_submissions(id,calendar_year,status,created_at)")
           .eq("applicant_auth_user_id", user.id)
           .order("submitted_at", { ascending: false }).limit(20),
       ]);
@@ -316,7 +318,7 @@ Deno.serve(async (req: Request) => {
         return json(req, { error: "Hanya admin keanggotaan yang dapat mengunduh master anggota." }, 403);
       }
       const { data: members, error } = await db.from("members")
-        .select("nra,full_name,category,discipline,institution,province,city_or_regency,email,whatsapp,status,joined_at")
+        .select("id,nra,full_name,category,discipline,institution,province,city_or_regency,email,whatsapp,status,joined_at")
         .order("nra", { ascending: true });
       if (error) throw error;
       const { data: dues, error: duesError } = await db.from("annual_membership_dues")
