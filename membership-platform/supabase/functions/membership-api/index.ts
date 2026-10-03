@@ -13,7 +13,7 @@ const allowedOrigins = new Set([
   "http://127.0.0.1:5500",
 ]);
 
-function cors(req: Request) {
+function cors(req) {
   const origin = req.headers.get("origin") ?? "";
   return {
     "Access-Control-Allow-Origin": allowedOrigins.has(origin) ? origin : "https://aeevi.org",
