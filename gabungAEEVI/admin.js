@@ -4,7 +4,8 @@ const adminPanel = document.querySelector("#admin-panel");
 const setupNotice = document.querySelector("#setup-notice");
 const queueTarget = document.querySelector("#application-queue");
 const queueMessage = document.querySelector("#queue-message");
-let supabase;\nlet currentRole = null;
+let supabase;
+let currentRole = null;
 
 function message(text, type = "") {
   queueMessage.textContent = text;
