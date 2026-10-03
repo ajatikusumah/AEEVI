@@ -18,20 +18,20 @@ Run these checks only in a dedicated non-production Supabase project after the m
 - Registrar: can review applications and request corrections or reject; cannot inspect payment evidence, validate payment, approve membership, or export the master.
 - Treasurer: can inspect evidence and verify/reject payment; cannot approve membership or export the master.
 - Membership admin: can validate payment and approve after payment is verified; can export the master workbook.
-- Superadmin: can administer roles/configuration and perform all membership actions.
+- Superadmin: can perform all membership actions and access member administration. Provision and change operator roles only through the trusted project-owner procedure.
 - A disabled or unlisted account receives a 403 response from admin actions.
 - A public member cannot call admin actions by changing the browser UI or request body.
 
 ## NRA, iuran and output
 
 1. Approval without a verified payment fails and leaves the application pending.
-2. Approve a paid new member. Verify one NRA is issued in B + year + four-digit sequence format, the application links to that record, and the NRA cannot later be changed.
-3. Approve a paid renewal. Verify the existing NRA remains unchanged and only one annual dues record exists for that member/year.
-4. Try two concurrent approvals for new members. Confirm unique NRA values with no reuse of retired NRA values.
-5. Verify payment and application decisions appear in the audit log.
-6. Download the .xlsx from the pengurus page and verify its member and annual-dues sheets contain no evidence files.
-7. Verify an approved member can display and print/save the digital card.
-8. Confirm the WhatsApp invitation is not auto-sent until an approved AEEVI messaging channel and invitation URL are configured.
+2. Submit a new application whose email or exact name matches the master. Confirm the pengurus sees a duplicate-review flag and approval is blocked until the reviewer acknowledges the check.\n3. Approve a paid new member. Verify one NRA is issued in B + year + four-digit sequence format, the application links to that record, and the NRA cannot later be changed.
+4. Approve a paid renewal. Verify the existing NRA remains unchanged and only one annual dues record exists for that member/year.
+5. Try two concurrent approvals for new members. Confirm unique NRA values with no reuse of retired NRA values.
+6. Verify payment and application decisions appear in the audit log.
+7. Download the .xlsx from the pengurus page and verify its member and annual-dues sheets contain no evidence files.
+8. Verify an approved member can display and print/save the digital card.
+9. Confirm the WhatsApp invitation is not auto-sent until an approved AEEVI messaging channel and invitation URL are configured.
 
 ## Data and recovery
 
