@@ -243,8 +243,11 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
     if (!role) return json(req, { error: "Akun ini tidak memiliki akses pengurus." }, 403);
 
     if (action === "admin-queue") {
+      const applicationFields = role === "treasurer"
+        ? "id,kind,requested_nra,full_name,status,submitted_at,member_id"
+        : "id,kind,requested_nra,full_name,institution,province,city_or_regency,email,whatsapp,status,submitted_at,member_id,possible_duplicate";
       const { data: applications, error } = await db.from("applications")
-        .select("id,kind,requested_nra,full_name,institution,province,city_or_regency,email,whatsapp,status,submitted_at,member_id,possible_duplicate")
+        .select(applicationFields)
         .order("submitted_at", { ascending: true })
         .limit(100);
       if (error) throw error;
