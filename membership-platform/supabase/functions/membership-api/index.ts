@@ -173,6 +173,43 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
       return json(req, { application, memberLinked: Boolean(linkedMemberId) }, 201);
     }
 
+    if (action === "revise-application") {
+      const applicationId = text(body.applicationId, 60);
+      const fullName = text(body.fullName, 180);
+      const whatsapp = text(body.whatsapp, 40);
+      if (!applicationId || fullName.length < 3 || whatsapp.length < 8) {
+        return json(req, { error: "Lengkapi nama dan nomor WhatsApp." }, 400);
+      }
+      const { data: current, error: currentError } = await db.from("applications")
+        .select("id,kind,status,requested_nra")
+        .eq("id", applicationId)
+        .eq("applicant_auth_user_id", user.id)
+        .maybeSingle();
+      if (currentError) throw currentError;
+      if (!current || current.status !== "needs_correction") {
+        return json(req, { error: "Pengajuan ini tidak menunggu perbaikan." }, 409);
+      }
+      const { data, error } = await db.from("applications").update({
+        full_name: fullName,
+        institution: text(body.institution, 180) || null,
+        province: text(body.province, 100) || null,
+        city_or_regency: text(body.cityOrRegency, 100) || null,
+        discipline: text(body.discipline, 120) || null,
+        category: text(body.category, 80) || null,
+        whatsapp,
+        requested_nra: current.kind === "renewal" ? text(body.nra, 24) || current.requested_nra : null,
+        status: "submitted",
+        reviewer_note: null,
+        reviewed_by: null,
+        reviewed_at: null,
+      }).eq("id", applicationId).eq("status", "needs_correction")
+        .select("id,status").maybeSingle();
+      if (error) throw error;
+      if (!data) return json(req, { error: "Status pengajuan berubah. Muat ulang halaman." }, 409);
+      await writeAudit(user.id, "revise_application", "application", applicationId);
+      return json(req, { application: data });
+    }
+
     if (action === "attach-payment") {
       const applicationId = text(body.applicationId, 60);
       const evidencePath = text(body.evidencePath, 240);
