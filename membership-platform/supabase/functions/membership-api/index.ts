@@ -74,7 +74,8 @@ Deno.serve(async (req: Request) => {
     return json(req, { error: "Permintaan tidak valid." }, 400);
   }
 
-  const action = text(body.action, 40);\nfunction jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "numeric", timeZone: "Asia/Jakarta" }).format(new Date())); }
+  const action = text(body.action, 40);
+function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "numeric", timeZone: "Asia/Jakarta" }).format(new Date())); }
   const user = await currentUser(req);
 
   try {
@@ -179,7 +180,10 @@ Deno.serve(async (req: Request) => {
         .eq("applicant_auth_user_id", user.id)
         .maybeSingle();
       if (appError) throw appError;
-      if (!application) return json(req, { error: "Pengajuan tidak ditemukan." }, 404);\n      if (!["submitted", "needs_correction"].includes(application.status)) {\n        return json(req, { error: "Bukti hanya dapat ditambahkan pada pengajuan yang masih diproses." }, 409);\n      }
+      if (!application) return json(req, { error: "Pengajuan tidak ditemukan." }, 404);
+      if (!["submitted", "needs_correction"].includes(application.status)) {
+        return json(req, { error: "Bukti hanya dapat ditambahkan pada pengajuan yang masih diproses." }, 409);
+      }
 
       const pathParts = evidencePath.split("/");
       if (pathParts.length !== 2) return json(req, { error: "Lokasi bukti pembayaran tidak valid." }, 400);
