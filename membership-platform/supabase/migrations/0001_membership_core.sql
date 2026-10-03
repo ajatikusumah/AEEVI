@@ -121,7 +121,7 @@ create table if not exists public.payment_submissions (
   id uuid primary key default gen_random_uuid(),
   application_id uuid not null references public.applications(id) on delete restrict,
   calendar_year integer not null check (calendar_year between 2020 and 2200),
-  amount_idr bigint not null check (amount_idr >= 0),
+  amount_idr bigint not null check (amount_idr = 200000),
   paid_on date,
   evidence_object_path text not null,
   status public.payment_status not null default 'pending',
