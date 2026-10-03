@@ -141,6 +141,16 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
       }
 
       const email = (user.email ?? "").toLowerCase();
+      let possibleDuplicate = false;
+      if (kind === "new") {
+        const [{ data: emailMatch, error: emailError }, { data: nameMatch, error: nameError }] = await Promise.all([
+          db.from("members").select("id").ilike("email", email).limit(1).maybeSingle(),
+          db.from("members").select("id").ilike("full_name", fullName).limit(1).maybeSingle(),
+        ]);
+        if (emailError) throw emailError;
+        if (nameError) throw nameError;
+        possibleDuplicate = Boolean(emailMatch || nameMatch);
+      }
       const { data: application, error } = await db.from("applications").insert({
         applicant_auth_user_id: user.id,
         window_id: windowRow.id,
@@ -156,6 +166,7 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
         email,
         whatsapp,
         consent_card_and_contact: consent,
+        possible_duplicate: possibleDuplicate,
         status: "submitted",
       }).select("id,status,submitted_at").single();
       if (error) throw error;
@@ -233,7 +244,7 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
 
     if (action === "admin-queue") {
       const { data: applications, error } = await db.from("applications")
-        .select("id,kind,requested_nra,full_name,institution,province,city_or_regency,email,whatsapp,status,submitted_at,member_id")
+        .select("id,kind,requested_nra,full_name,institution,province,city_or_regency,email,whatsapp,status,submitted_at,member_id,possible_duplicate")
         .order("submitted_at", { ascending: true })
         .limit(100);
       if (error) throw error;
@@ -311,6 +322,7 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
         const { data, error } = await db.rpc("approve_membership_application", {
           p_application_id: applicationId,
           p_actor_id: user.id,
+          p_duplicate_checked: body.duplicateChecked === true,
         }).single();
         if (error) throw error;
         return json(req, { ok: true, member: data });
