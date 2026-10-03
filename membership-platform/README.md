@@ -41,7 +41,7 @@ The SQL migration establishes the core tables, uniqueness constraints, NRA immut
 3. Create the first administrator accounts through a trusted project-owner procedure; never expose admin self-registration.
 4. Configure secret values in the Supabase project and deployment settings. Keep only the Supabase URL and publishable key in the static client.
 5. Implement the functions and connect the existing `membership.html` page; test in staging before linking it publicly.
-6. Import the 275-row reviewed master only after confirming data-cleaning decisions. The current workbook notes 33 unresolved duplicate-name groups and 59 source name–NRA conflicts. Do not bulk-import uncertain merge decisions or infer historical dues as verified.
+6. Import the reviewed 237-row master after confirming the final import mapping. The 34 duplicate groups are resolved by retaining the first NRA and recording 38 later NRA values as retired. The workbook still contains 59 source name–NRA conflicts that require separate validation. Do not infer historical dues as verified.
 
 ## Source references
 - Supabase Auth and RLS: https://supabase.com/docs/guides/auth and https://supabase.com/docs/guides/database/postgres/row-level-security
