@@ -273,6 +273,15 @@ begin
       raise exception 'Renewal must be linked to a verified existing member';
     end if;
 
+    if exists (
+      select 1 from public.members
+      where id = v_member_id
+        and auth_user_id is not null
+        and auth_user_id <> v_application.applicant_auth_user_id
+    ) then
+      raise exception 'This member is already linked to a different verified account';
+    end if;
+
     update public.members
     set status = 'active',
         auth_user_id = coalesce(auth_user_id, v_application.applicant_auth_user_id),
@@ -409,7 +418,7 @@ drop policy if exists payments_owner_or_admin_read on public.payment_submissions
 create policy payments_owner_or_admin_read
 on public.payment_submissions for select to authenticated
 using (
-  public.is_membership_admin()
+  public.has_membership_role(array['treasurer', 'membership_admin', 'superadmin']::public.admin_role[])
   or exists (
     select 1 from public.applications a
     where a.id = payment_submissions.application_id
@@ -494,7 +503,7 @@ on storage.objects for select to authenticated
 using (
   bucket_id = 'payment-evidence'
   and (
-    public.is_membership_admin()
+    public.has_membership_role(array['treasurer', 'membership_admin', 'superadmin']::public.admin_role[])
     or exists (
       select 1 from public.applications a
       where a.id::text = (storage.foldername(name))[1]
