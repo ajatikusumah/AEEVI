@@ -4,7 +4,7 @@ const adminPanel = document.querySelector("#admin-panel");
 const setupNotice = document.querySelector("#setup-notice");
 const queueTarget = document.querySelector("#application-queue");
 const queueMessage = document.querySelector("#queue-message");
-let supabase;
+let supabase;\nlet currentRole = null;
 
 function message(text, type = "") {
   queueMessage.textContent = text;
@@ -62,7 +62,7 @@ async function loadQueue() {
           window.open(data.signedUrl, "_blank", "noopener,noreferrer");
         });
         pay.append(proof);
-        if (payment.status === "pending") {
+        if (payment.status === "pending" && ["treasurer", "membership_admin", "superadmin"].includes(currentRole)) {
           const verify = document.createElement("button");
           verify.type = "button";
           verify.className = "button button-primary";
