@@ -321,7 +321,6 @@ begin
     )
     returning id, nra into v_member_id, v_nra;
 
-    v_year := extract(year from timezone('Asia/Jakarta', now()))::integer;
     perform pg_advisory_xact_lock(hashtext('aeevi-nra-' || v_year::text));
 
     select coalesce(max(right(nra, 4)::integer), 0) + 1
