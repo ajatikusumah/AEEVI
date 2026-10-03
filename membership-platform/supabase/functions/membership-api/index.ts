@@ -231,12 +231,30 @@ Deno.serve(async (req: Request) => {
     if (!role) return json(req, { error: "Akun ini tidak memiliki akses pengurus." }, 403);
 
     if (action === "admin-queue") {
-      const { data, error } = await db.from("applications")
-        .select("id,kind,requested_nra,full_name,institution,province,city_or_regency,email,whatsapp,status,submitted_at,member_id,payment_submissions(id,calendar_year,amount_idr,paid_on,status,evidence_object_path)")
+      const { data: applications, error } = await db.from("applications")
+        .select("id,kind,requested_nra,full_name,institution,province,city_or_regency,email,whatsapp,status,submitted_at,member_id")
         .order("submitted_at", { ascending: true })
         .limit(100);
       if (error) throw error;
-      return json(req, { role, applications: data ?? [] });
+      const canReviewPayments = ["treasurer", "membership_admin", "superadmin"].includes(role);
+      let paymentMap = new Map<string, unknown[]>();
+      if (canReviewPayments && applications?.length) {
+        const ids = applications.map((app: any) => app.id);
+        const { data: payments, error: paymentsError } = await db.from("payment_submissions")
+          .select("id,application_id,calendar_year,amount_idr,paid_on,status,evidence_object_path")
+          .in("application_id", ids);
+        if (paymentsError) throw paymentsError;
+        for (const payment of payments ?? []) {
+          const rows = paymentMap.get(payment.application_id) ?? [];
+          rows.push(payment);
+          paymentMap.set(payment.application_id, rows);
+        }
+      }
+      const queue = (applications ?? []).map((app: any) => ({
+        ...app,
+        payment_submissions: paymentMap.get(app.id) ?? [],
+      }));
+      return json(req, { role, applications: queue });
     }
 
     if (action === "verify-payment") {
