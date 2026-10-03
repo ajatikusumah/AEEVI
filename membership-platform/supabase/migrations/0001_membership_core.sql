@@ -412,7 +412,7 @@ using (public.has_membership_role(array['membership_admin', 'superadmin']::publi
 drop policy if exists retired_nras_admin_only on public.retired_nras;
 create policy retired_nras_admin_only
 on public.retired_nras for select to authenticated
-using (public.is_membership_admin());
+using (public.has_membership_role(array['membership_admin', 'superadmin']::public.admin_role[]));
 
 drop policy if exists applications_owner_or_admin_read on public.applications;
 create policy applications_owner_or_admin_read
