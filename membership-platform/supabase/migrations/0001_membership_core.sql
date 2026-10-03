@@ -140,6 +140,10 @@ create unique index if not exists one_verified_payment_per_application_year
   on public.payment_submissions (application_id, calendar_year)
   where status = 'verified';
 
+create unique index if not exists one_pending_payment_per_application_year
+  on public.payment_submissions (application_id, calendar_year)
+  where status = 'pending';
+
 create table if not exists public.annual_membership_dues (
   id uuid primary key default gen_random_uuid(),
   member_id uuid not null references public.members(id) on delete restrict,
