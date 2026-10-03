@@ -109,6 +109,7 @@ function renderDashboard(data) {
     rows.push(item);
   }
   for (const app of data.applications || []) {
+    const payments = app.payment_submissions || [];
     const item = document.createElement("div");
     item.className = "status-item";
     const strong = document.createElement("strong");
@@ -116,7 +117,7 @@ function renderDashboard(data) {
     const status = document.createElement("span");
     status.textContent = `${statusLabel(app.status)} · ${new Date(app.submitted_at).toLocaleDateString("id-ID")}`;
     item.append(strong, status);
-    for (const payment of app.payment_submissions || []) {
+    for (const payment of payments) {
       const pay = document.createElement("div");
       pay.textContent = `Iuran ${payment.calendar_year}: ${statusLabel(payment.status)}`;
       item.append(pay);
@@ -295,6 +296,7 @@ if (!config.url || !config.publishableKey) {
       return;
     }
     const form = new FormData(applicationForm);
+    const evidenceInput = document.querySelector("#payment-evidence");
     const file = form.get("evidence");
     const hasFile = file instanceof File && file.size > 0;
     if (!revisingId && !hasFile) {
