@@ -258,7 +258,7 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
         db.from("members").select("id,nra,full_name,institution,province,city_or_regency,status")
           .eq("auth_user_id", user.id).maybeSingle(),
         db.from("applications")
-          .select("id,kind,requested_nra,status,submitted_at,reviewer_note,window_id,payment_submissions(id,calendar_year,status,created_at)")
+          .select("id,kind,requested_nra,status,submitted_at,reviewer_note,window_id,full_name,institution,province,city_or_regency,discipline,category,whatsapp,payment_submissions(id,calendar_year,status,created_at)")
           .eq("applicant_auth_user_id", user.id)
           .order("submitted_at", { ascending: false }).limit(20),
       ]);
