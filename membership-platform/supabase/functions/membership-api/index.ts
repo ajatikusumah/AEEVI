@@ -2,7 +2,8 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import * as XLSX from "npm:xlsx@0.18.5";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
-const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+const secretKeys = JSON.parse(Deno.env.get("SUPABASE_SECRET_KEYS") ?? "{}");
+const serviceKey = secretKeys.default ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const db = createClient(supabaseUrl, serviceKey, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
@@ -141,7 +142,7 @@ function jakartaYear() { return Number(new Intl.DateTimeFormat("en", { year: "nu
       }
 
       const email = (user.email ?? "").toLowerCase();
-      let possibleDuplicate = false;
+      let possibleDuplicate = kind === "renewal" && !linkedMemberId;
       if (kind === "new") {
         const [{ data: emailMatch, error: emailError }, { data: nameMatch, error: nameError }] = await Promise.all([
           db.from("members").select("id").ilike("email", email).limit(1).maybeSingle(),
