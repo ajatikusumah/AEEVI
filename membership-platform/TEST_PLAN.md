@@ -25,7 +25,8 @@ Run these checks only in a dedicated non-production Supabase project after the m
 ## NRA, iuran and output
 
 1. Approval without a verified payment fails and leaves the application pending.
-2. Submit a new application whose email or exact name matches the master. Confirm the pengurus sees a duplicate-review flag and approval is blocked until the reviewer acknowledges the check.\n3. Approve a paid new member. Verify one NRA is issued in B + year + four-digit sequence format, the application links to that record, and the NRA cannot later be changed.
+2. Submit a new application whose email or exact name matches the master. Confirm the pengurus sees a duplicate-review flag and approval is blocked until the reviewer acknowledges the check.
+3. Approve a paid new member. Verify one NRA is issued in B + year + four-digit sequence format, the application links to that record, and the NRA cannot later be changed.
 4. Approve a paid renewal. Verify the existing NRA remains unchanged and only one annual dues record exists for that member/year.
 5. Try two concurrent approvals for new members. Confirm unique NRA values with no reuse of retired NRA values.
 6. Verify payment and application decisions appear in the audit log.
