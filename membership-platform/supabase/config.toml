@@ -1,0 +1,4 @@
+project_id = "aeevi-membership"
+
+[functions.membership-api]
+verify_jwt = false
