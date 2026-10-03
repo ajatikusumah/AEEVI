@@ -35,13 +35,13 @@ Before production, run all checks in `TEST_PLAN.md` against a separate staging p
 
 ## 3. Provision the first operator
 
-Create the intended AEEVI operator account using Supabase Auth (email invitation or confirmed sign-in). Then, as the project owner, run this in the Supabase SQL Editor, replacing the address with the nominated first administrator:
+Create the intended AEEVI operator account using Supabase Auth (email invitation or confirmed sign-in). Then, as the project owner, run this in the Supabase SQL Editor, using the nominated first administrator email:
 
 ```sql
 insert into public.admin_users (auth_user_id, role, enabled)
 select id, 'superadmin', true
 from auth.users
-where lower(email) = lower('admin@aeevi.org')
+where lower(email) = lower('aeevi.indonesia@gmail.com')
   and email_confirmed_at is not null
 on conflict (auth_user_id) do update
 set role = excluded.role,
@@ -50,13 +50,17 @@ set role = excluded.role,
 
 Confirm that one row was inserted or updated. Add other named operators using only the roles `registrar`, `treasurer`, `membership_admin`, and `superadmin`. Do not provide public administrator registration.
 
-## 4. Configure the public page
+## 4. Annual dues amount
+
+The approved annual dues amount is Rp 200,000 per member per year. The public form displays that amount, the Edge Function rejects any different amount, and the database constraint enforces it. If AEEVI changes the fee later, update the form, Edge Function, and database constraint together before opening the next period.
+
+## 5. Configure the public page
 
 Set `url` and `publishableKey` in `membership-platform/public-config.js` to the AEEVI Supabase project's API URL and publishable key. Commit only those two public values to the repository. Never place the secret/service-role key there.
 
 The Edge Function uses `SUPABASE_URL` and `SUPABASE_SECRET_KEYS.default` supplied by the Supabase runtime. It supports the legacy `SUPABASE_SERVICE_ROLE_KEY` name as a fallback. Do not copy a secret key into Vercel; the AEEVI static site does not have an AEEVI Vercel project in the currently connected account.
 
-## 5. Validate and activate
+## 6. Validate and activate
 
 - Sign in as one account from each operator role and confirm permissions in `TEST_PLAN.md`.
 - Confirm the public page shows the correct period in Jakarta time and rejects submissions outside the window.
