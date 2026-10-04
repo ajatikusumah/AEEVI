@@ -28,7 +28,13 @@ function addText(parent, tag, className, value) {
   parent.append(el);
   return el;
 }
-async function loadQueue() {
+let queueLoadPromise = null;
+function loadQueue() {
+  if (queueLoadPromise) return queueLoadPromise;
+  queueLoadPromise = loadQueueOnce().finally(() => { queueLoadPromise = null; });
+  return queueLoadPromise;
+}
+async function loadQueueOnce() {
   message("Memuat daftar pengajuan…");
   queueTarget.replaceChildren();
   try {
