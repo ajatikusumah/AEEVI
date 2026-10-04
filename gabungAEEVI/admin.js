@@ -131,11 +131,63 @@ if (!config.url || !config.publishableKey) {
 } else {
   const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
   supabase = createClient(config.url, config.publishableKey, { auth: { flowType: "pkce", persistSession: true } });
-  document.querySelector("#admin-login").addEventListener("submit", async (event) => {
+  const adminLogin = document.querySelector("#admin-login");
+  const adminLoginButton = adminLogin.querySelector("button[type=\"submit\"]");
+  const adminMessage = document.querySelector("#admin-message");
+  let loginCooldownTimer = null;
+
+  function coolDownLogin(seconds, messageText, type = "", afterMessage = "Jika tautan belum diterima, Anda dapat mencoba lagi.") {
+    if (loginCooldownTimer) clearInterval(loginCooldownTimer);
+    const until = Date.now() + seconds * 1000;
+    adminLoginButton.disabled = true;
+    const update = () => {
+      const remaining = Math.max(0, Math.ceil((until - Date.now()) / 1000));
+      if (!remaining) {
+        clearInterval(loginCooldownTimer);
+        loginCooldownTimer = null;
+        adminLoginButton.disabled = false;
+        adminLoginButton.textContent = "Kirim tautan masuk ↗";
+        adminMessage.textContent = afterMessage;
+        adminMessage.className = "form-message";
+        return;
+      }
+      adminLoginButton.textContent = `Tunggu ${remaining} dtk`;
+      adminMessage.textContent = `${messageText} Coba lagi setelah ${remaining} detik.`;
+      adminMessage.className = `form-message ${type}`.trim();
+    };
+    update();
+    loginCooldownTimer = setInterval(update, 1000);
+  }
+
+  adminLogin.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (adminLoginButton.disabled) return;
     const email = document.querySelector("#admin-email").value.trim();
-    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: location.href.split("#")[0] } });
-    document.querySelector("#admin-message").textContent = error ? error.message : "Tautan masuk dikirim ke email pengurus.";
+    adminLoginButton.disabled = true;
+    adminLoginButton.textContent = "Mengirim…";
+    adminMessage.textContent = "Sedang meminta tautan masuk. Jangan tekan tombol lagi.";
+    adminMessage.className = "form-message";
+    try {
+      const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: location.href.split("#")[0] } });
+      if (!error) {
+        coolDownLogin(60, "Permintaan diterima. Periksa Inbox, Semua Email, dan Spam.", "success", "Jika tautan belum masuk, Anda dapat meminta satu tautan lagi.");
+        return;
+      }
+      const status = Number(error.status || error.context?.status || 0);
+      if (status === 504 || error.code === "request_timeout") {
+        coolDownLogin(60, "Supabase Auth kehabisan waktu menunggu. Email mungkin tetap diproses; cek Inbox dan Spam sebelum mencoba lagi.", "error", "Jika email belum masuk, coba kirim tautan sekali.");
+      } else if (status === 429) {
+        const retryAfter = Number(error.context?.headers?.get("Retry-After") || 0);
+        coolDownLogin(Math.max(300, retryAfter), "Batas pengiriman email tercapai. Tunggu sebelum mencoba lagi.", "error", "Batas pengiriman mungkin masih berlaku. Hindari percobaan berulang.");
+      } else {
+        adminLoginButton.disabled = false;
+        adminLoginButton.textContent = "Kirim tautan masuk ↗";
+        adminMessage.textContent = error.message || "Tautan masuk gagal diminta.";
+        adminMessage.className = "form-message error";
+      }
+    } catch (error) {
+      coolDownLogin(60, "Permintaan tidak mendapat jawaban dari server. Cek email sebelum mencoba lagi.", "error", "Jika email belum masuk, coba kirim tautan sekali.");
+    }
   });
   document.querySelector("#admin-signout").addEventListener("click", async () => { await supabase.auth.signOut(); updateView(null); });
   document.querySelector("#refresh-queue").addEventListener("click", loadQueue);
