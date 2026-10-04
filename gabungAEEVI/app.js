@@ -273,15 +273,58 @@ if (!config.url || !config.publishableKey) {
     auth: { flowType: "pkce", autoRefreshToken: true, persistSession: true },
   });
 
+  const loginButton = loginForm.querySelector("button[type=\"submit\"]");
+  let loginCooldownTimer = null;
+  function coolDownLogin(seconds, messageText, type = "", afterMessage = "Jika tautan belum masuk, Anda dapat mencoba lagi.") {
+    if (loginCooldownTimer) clearInterval(loginCooldownTimer);
+    const until = Date.now() + seconds * 1000;
+    loginButton.disabled = true;
+    const update = () => {
+      const remaining = Math.max(0, Math.ceil((until - Date.now()) / 1000));
+      if (!remaining) {
+        clearInterval(loginCooldownTimer);
+        loginCooldownTimer = null;
+        loginButton.disabled = false;
+        loginButton.textContent = "Kirim tautan masuk ↗";
+        setMessage(loginMessage, afterMessage);
+        return;
+      }
+      loginButton.textContent = `Tunggu ${remaining} dtk`;
+      setMessage(loginMessage, `${messageText} Coba lagi setelah ${remaining} detik.`, type);
+    };
+    update();
+    loginCooldownTimer = setInterval(update, 1000);
+  }
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (loginButton.disabled) return;
     const email = document.querySelector("#login-email").value.trim();
-    setMessage(loginMessage, "Mengirim tautan masuk…");
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.href.split("#")[0] },
-    });
-    setMessage(loginMessage, error ? error.message : "Tautan masuk telah dikirim. Periksa email Anda.", error ? "error" : "success");
+    loginButton.disabled = true;
+    loginButton.textContent = "Mengirim…";
+    setMessage(loginMessage, "Sedang meminta tautan masuk. Jangan tekan tombol lagi.");
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: window.location.href.split("#")[0] },
+      });
+      if (!error) {
+        coolDownLogin(60, "Permintaan diterima. Periksa Inbox, Semua Email, dan Spam.", "success", "Jika tautan belum masuk, Anda dapat meminta satu tautan lagi.");
+        return;
+      }
+      const status = Number(error.status || error.context?.status || 0);
+      if (status === 504 || error.code === "request_timeout") {
+        coolDownLogin(60, "Supabase Auth kehabisan waktu menunggu. Email mungkin tetap diproses; cek Inbox dan Spam sebelum mencoba lagi.", "error", "Jika email belum masuk, coba kirim tautan sekali.");
+      } else if (status === 429) {
+        const retryAfter = Number(error.context?.headers?.get("Retry-After") || 0);
+        coolDownLogin(Math.max(300, retryAfter), "Batas pengiriman email tercapai. Tunggu sebelum mencoba lagi.", "error", "Batas pengiriman mungkin masih berlaku. Hindari percobaan berulang.");
+      } else {
+        loginButton.disabled = false;
+        loginButton.textContent = "Kirim tautan masuk ↗";
+        setMessage(loginMessage, error.message || "Tautan masuk gagal diminta.", "error");
+      }
+    } catch (error) {
+      coolDownLogin(60, "Permintaan tidak mendapat jawaban dari server. Cek email sebelum mencoba lagi.", "error", "Jika email belum masuk, coba kirim tautan sekali.");
+    }
   });
 
   document.querySelector("#signout-button").addEventListener("click", async () => {
